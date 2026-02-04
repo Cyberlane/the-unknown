@@ -5,6 +5,16 @@
 * Code Style: 4 spaces for indentation (enforced via .editorconfig)
 * Global Singleton: DimensionManager (scripts/autoload/dimension_manager.gd) ✓
 
+## Core Systems
+
+### Interaction System
+- Raycast-based interaction from player camera
+- Interactable base class for objects that can be examined/used
+- Press E to interact with objects in view (3m range by default)
+- Automatic interaction prompt display when looking at interactables
+- Dialogue system for text-based interactions
+- Collision layer 2 used for interactable objects
+
 ## Implemented Systems
 
 ### DimensionManager (Autoload)
@@ -44,7 +54,9 @@
 - First-person CharacterBody3D with mouse look
 - WASD movement, Space to jump
 - Keys 1-4 trigger dimension switching
+- **E key for interactions**
 - ESC toggles mouse capture
+- RayCast3D from camera for detecting interactables (3m range)
 - AudioStreamPlayer for dimension switch sound effects
 - Dimension-specific pitch variations:
   - Normal: 1.0x (base pitch)

@@ -1,10 +1,12 @@
-[gd_scene load_steps=22 format=3 uid="uid://bkj8x7vn5qr2p"]
+[gd_scene load_steps=25 format=3 uid="uid://bkj8x7vn5qr2p"]
 
 [ext_resource type="PackedScene" uid="uid://cx8yp7qn2uqyg" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/dimension_object.gd" id="2_dimobj"]
 [ext_resource type="Script" path="res://scripts/dimension_environment.gd" id="3_dimenv"]
 [ext_resource type="Shader" path="res://materials/shaders/dimension_transition.gdshader" id="4_shader"]
 [ext_resource type="Script" path="res://scripts/dimension_transition_overlay.gd" id="5_overlay"]
+[ext_resource type="PackedScene" uid="uid://dyh3m8v4n5qr8" path="res://scenes/ui/game_ui.tscn" id="6_gameui"]
+[ext_resource type="Script" path="res://scripts/interactable.gd" id="7_interact"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 size = Vector3(20, 0.2, 20)
@@ -26,6 +28,15 @@ albedo_color = Color(0.6, 0.1, 0.1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cube"]
 size = Vector3(1, 1.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pedestal"]
+size = Vector3(1, 0.8, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pedestal"]
+albedo_color = Color(0.5, 0.5, 0.5, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_interact"]
+size = Vector3(1.2, 1.2, 1.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wall"]
 size = Vector3(8, 4, 0.5)
@@ -178,3 +189,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="InteractablePedestal" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, -3)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("7_interact")
+interaction_prompt = "Press E to examine the pedestal"
+dialogue_text = "An ancient pedestal. You feel a strange energy emanating from it. Perhaps it holds secrets about the dimensions..."
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="InteractablePedestal"]
+mesh = SubResource("BoxMesh_pedestal")
+surface_material_override/0 = SubResource("StandardMaterial3D_pedestal")
+
+[node name="InteractionArea" type="Area3D" parent="InteractablePedestal"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractablePedestal/InteractionArea"]
+shape = SubResource("BoxShape3D_interact")
+
+[node name="GameUI" parent="." instance=ExtResource("6_gameui")]

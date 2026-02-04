@@ -23,7 +23,8 @@ the-unknown/
 - **WASD**: Move around
 - **Mouse**: Look around
 - **Space**: Jump
-- **ESC**: Toggle mouse capture
+- **E**: Interact with objects
+- **ESC**: Toggle mouse capture / Close dialogue
 - **1**: Switch to Normal dimension (gray)
 - **2**: Switch to Viking dimension (blue)
 - **3**: Switch to Aztec dimension (gold)
@@ -33,6 +34,8 @@ the-unknown/
 
 - First-person character controller with mouse look
 - Global dimension management system
+- **Raycast-based interaction system** - look at objects and press E to interact
+- **Dialogue system** for displaying text from interactable objects
 - DimensionObject base class for objects that change appearance and collision based on dimension
 - DimensionEnvironment system for instant sky and ambient lighting changes per dimension
 - Animated transition overlay with color flash effect when switching dimensions
@@ -40,6 +43,7 @@ the-unknown/
 - Test scene demonstrating:
   - A statue that changes color based on the active dimension
   - A blue wall that only has collision in the Viking dimension (press 2) - you must switch to another dimension to pass through it
+  - An interactable pedestal - look at it and press E to read dialogue
   - Distinct sky colors and ambient lighting for each dimension:
     - **Normal (1)**: Light blue sky, neutral lighting
     - **Viking (2)**: Deep blue sky, cool blue ambient

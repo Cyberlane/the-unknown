@@ -6,11 +6,14 @@ const JUMP_VELOCITY = 4.5
 const MOUSE_SENSITIVITY = 0.002
 
 @export var dimension_switch_sound: AudioStream
+@export var interaction_distance: float = 3.0
 
 @onready var camera = $Camera3D
 @onready var dimension_audio = $DimensionSwitchAudio
+@onready var interaction_ray = $Camera3D/InteractionRay
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var current_interactable: Interactable = null
 
 # Dimension-specific pitch variations for the whoosh sound
 var dimension_pitches = {
@@ -29,6 +32,9 @@ func _ready():
     # Set up audio player
     if dimension_switch_sound:
         dimension_audio.stream = dimension_switch_sound
+
+    # Set up interaction raycast
+    interaction_ray.target_position = Vector3(0, 0, -interaction_distance)
 
 func _on_dimension_changed(new_dim):
     # Play whoosh sound with dimension-specific pitch
@@ -61,6 +67,10 @@ func _input(event):
     elif event.is_action_pressed("dimension_4"):
         DimensionManager.switch_to(3)  # NIGHTMARE
 
+    # Interaction with E key
+    if event.is_action_pressed("interact"):
+        _try_interact()
+
 func _physics_process(delta):
     # Add gravity
     if not is_on_floor():
@@ -82,3 +92,53 @@ func _physics_process(delta):
         velocity.z = move_toward(velocity.z, 0, SPEED)
 
     move_and_slide()
+
+    # Check for interactables every frame
+    _check_for_interactable()
+
+func _check_for_interactable() -> void:
+    if interaction_ray.is_colliding():
+        var collider = interaction_ray.get_collider()
+
+        # Check if we hit an Interactable or a node with an Interactable parent
+        var interactable = _find_interactable(collider)
+
+        if interactable and interactable != current_interactable:
+            current_interactable = interactable
+            _show_interaction_prompt()
+        elif not interactable and current_interactable:
+            current_interactable = null
+            _hide_interaction_prompt()
+    else:
+        if current_interactable:
+            current_interactable = null
+            _hide_interaction_prompt()
+
+func _find_interactable(node: Node) -> Interactable:
+    # Check if the node itself is an Interactable
+    if node is Interactable:
+        return node
+
+    # Check if any parent is an Interactable
+    var current = node
+    while current:
+        if current is Interactable:
+            return current
+        current = current.get_parent()
+
+    return null
+
+func _try_interact() -> void:
+    if current_interactable:
+        current_interactable.interact(self)
+
+func _show_interaction_prompt() -> void:
+    var ui = get_tree().get_first_node_in_group("interaction_ui")
+    if ui and ui.has_method("show_prompt"):
+        var prompt = current_interactable.get_interaction_prompt()
+        ui.show_prompt(prompt)
+
+func _hide_interaction_prompt() -> void:
+    var ui = get_tree().get_first_node_in_group("interaction_ui")
+    if ui and ui.has_method("hide_prompt"):
+        ui.hide_prompt()
