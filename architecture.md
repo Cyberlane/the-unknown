@@ -56,7 +56,17 @@
 - **Save/Load**: `save_to_file()`, `load_from_file()` - JSON-based persistence to disk
 - **Debug**: `debug_print_all_states()` - Print all tracked objects
 - **Use case**: Pickups stay collected, doors stay open, switches stay activated across dimension changes and LevelRegion reloads
-- Example implementations: `scripts/pickup.gd`, `scripts/persistent_door.gd`
+- Example implementations: `scripts/pickup.gd`, `scripts/persistent_door.gd`, `scripts/persistent_box.gd`
+
+### PersistentBox (RigidBody3D)
+- Extends RigidBody3D
+- Movable physics object that saves position/rotation using PersistenceManager
+- Saves state every 0.5 seconds when moving
+- Automatically restores position when scene reloads
+- Saves on exit to capture final position when region unloads
+- Export: `box_id` (unique identifier), `save_interval` (how often to save)
+- Perfect for pushable crates, movable objects in puzzles
+- Example: Greybox demo hallway (Viking dimension)
 
 ### DimensionObject (Base Class)
 - @tool script - works in both editor and runtime
@@ -80,6 +90,16 @@
 - Debug message printed to console when triggered
 - Semi-transparent debug mesh in editor (color-coded by dimension)
 - Perfect for dimension-specific puzzles, secrets, and events
+
+### VoiceTrigger (Node)
+- Helper script for DimensionTrigger that shows dialogue when triggered
+- Extends Node - attach as child of DimensionTrigger
+- Export: `dimension_trigger` (NodePath to parent trigger)
+- Export: `voice_message` (text to display)
+- Export: `auto_dismiss_time` (seconds before auto-hiding dialogue)
+- Automatically connects to trigger's `dimension_triggered` signal
+- Uses DialogueUI if available, falls back to console print
+- Example: Greybox demo room (Aztec dimension voice)
 
 ### DimensionGate (Area3D)
 - @tool script - visual placeholder visible in editor

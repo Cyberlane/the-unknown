@@ -85,3 +85,12 @@ This project uses **4 spaces** for indentation (no tabs). The `.editorconfig` fi
    - See `audio/README.md` for where to find free sound effects
 3. Press F5 to run the test scene
 4. Use number keys 1-4 to switch between dimensions and watch the statue change colors
+
+## Greybox Demo Level
+
+A complete demo level showcasing the core systems is available at `scenes/levels/greybox_demo.tscn`. It demonstrates:
+1. **Scene Transition** - LevelRegion proximity-based loading (hallway → room)
+2. **Persistence** - Movable box in Viking dimension that remembers position
+3. **Voice Trigger** - Aztec-specific audio that only plays in Aztec dimension
+
+Run the demo and follow the on-screen instructions to test all three systems!
