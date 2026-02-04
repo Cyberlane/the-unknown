@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://bkj8x7vn5qr2p"]
+[gd_scene load_steps=20 format=3 uid="uid://bkj8x7vn5qr2p"]
 
 [ext_resource type="PackedScene" uid="uid://cx8yp7qn2uqyg" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/dimension_object.gd" id="2_dimobj"]
+[ext_resource type="Script" path="res://scripts/dimension_environment.gd" id="3_dimenv"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 size = Vector3(20, 0.2, 20)
@@ -30,7 +31,80 @@ size = Vector3(8, 4, 0.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
 size = Vector3(8, 4, 0.5)
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_normal"]
+sky_top_color = Color(0.5, 0.7, 0.9, 1)
+sky_horizon_color = Color(0.7, 0.8, 0.9, 1)
+ground_horizon_color = Color(0.7, 0.8, 0.9, 1)
+
+[sub_resource type="Sky" id="Sky_normal"]
+sky_material = SubResource("ProceduralSkyMaterial_normal")
+
+[sub_resource type="Environment" id="Environment_normal"]
+background_mode = 2
+sky = SubResource("Sky_normal")
+ambient_light_source = 3
+ambient_light_color = Color(0.8, 0.8, 0.8, 1)
+ambient_light_energy = 0.5
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_viking"]
+sky_top_color = Color(0.1, 0.3, 0.6, 1)
+sky_horizon_color = Color(0.3, 0.5, 0.7, 1)
+ground_bottom_color = Color(0.15, 0.2, 0.3, 1)
+ground_horizon_color = Color(0.3, 0.5, 0.7, 1)
+
+[sub_resource type="Sky" id="Sky_viking"]
+sky_material = SubResource("ProceduralSkyMaterial_viking")
+
+[sub_resource type="Environment" id="Environment_viking"]
+background_mode = 2
+sky = SubResource("Sky_viking")
+ambient_light_source = 3
+ambient_light_color = Color(0.4, 0.6, 0.9, 1)
+ambient_light_energy = 0.6
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_aztec"]
+sky_top_color = Color(0.9, 0.6, 0.2, 1)
+sky_horizon_color = Color(0.95, 0.8, 0.4, 1)
+ground_bottom_color = Color(0.6, 0.4, 0.2, 1)
+ground_horizon_color = Color(0.95, 0.8, 0.4, 1)
+
+[sub_resource type="Sky" id="Sky_aztec"]
+sky_material = SubResource("ProceduralSkyMaterial_aztec")
+
+[sub_resource type="Environment" id="Environment_aztec"]
+background_mode = 2
+sky = SubResource("Sky_aztec")
+ambient_light_source = 3
+ambient_light_color = Color(0.95, 0.8, 0.5, 1)
+ambient_light_energy = 0.7
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nightmare"]
+sky_top_color = Color(0.3, 0.05, 0.05, 1)
+sky_horizon_color = Color(0.5, 0.1, 0.1, 1)
+ground_bottom_color = Color(0.2, 0.02, 0.02, 1)
+ground_horizon_color = Color(0.5, 0.1, 0.1, 1)
+
+[sub_resource type="Sky" id="Sky_nightmare"]
+sky_material = SubResource("ProceduralSkyMaterial_nightmare")
+
+[sub_resource type="Environment" id="Environment_nightmare"]
+background_mode = 2
+sky = SubResource("Sky_nightmare")
+ambient_light_source = 3
+ambient_light_color = Color(0.6, 0.2, 0.2, 1)
+ambient_light_energy = 0.4
+
 [node name="TestScene" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_normal")
+
+[node name="EnvironmentManager" type="Node" parent="."]
+script = ExtResource("3_dimenv")
+normal_environment = SubResource("Environment_normal")
+viking_environment = SubResource("Environment_viking")
+aztec_environment = SubResource("Environment_aztec")
+nightmare_environment = SubResource("Environment_nightmare")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)

@@ -22,6 +22,16 @@
 - Connects to DimensionManager's signal on _ready()
 - Enables dimension-specific geometry and physics (e.g., walls that only exist in certain dimensions)
 
+### DimensionEnvironment (Manager)
+- Extends Node
+- Manages 4 WorldEnvironment nodes (one per dimension)
+- Instantly switches active environment when dimension changes
+- Each dimension has unique sky colors and ambient lighting:
+  - Normal: Light blue sky, neutral white ambient (0.5 energy)
+  - Viking: Deep blue sky, cool blue ambient (0.6 energy)
+  - Aztec: Golden/orange sky, warm golden ambient (0.7 energy)
+  - Nightmare: Dark red sky, dim red ambient (0.4 energy)
+
 ### Player Controller
 - First-person CharacterBody3D with mouse look
 - WASD movement, Space to jump
@@ -32,6 +42,7 @@
 
 ### test_scene.tscn
 - Main test/demo scene
-- Contains: Floor, DirectionalLight3D, Player, Statue, VikingWall
+- Contains: Floor, DirectionalLight3D, Player, Statue, VikingWall, EnvironmentManager
 - Statue uses DimensionObject with 4 colored cubes (gray, blue, gold, red)
 - VikingWall demonstrates dimension-specific collision (only solid in Viking dimension)
+- EnvironmentManager with 4 WorldEnvironment nodes for instant sky/lighting changes

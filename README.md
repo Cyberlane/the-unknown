@@ -34,10 +34,16 @@ the-unknown/
 - First-person character controller with mouse look
 - Global dimension management system
 - DimensionObject base class for objects that change appearance and collision based on dimension
+- DimensionEnvironment system for instant sky and ambient lighting changes per dimension
 - Dimension-specific collision (walls that only exist in certain dimensions)
 - Test scene demonstrating:
   - A statue that changes color based on the active dimension
   - A blue wall that only has collision in the Viking dimension (press 2) - you must switch to another dimension to pass through it
+  - Distinct sky colors and ambient lighting for each dimension:
+    - **Normal (1)**: Light blue sky, neutral lighting
+    - **Viking (2)**: Deep blue sky, cool blue ambient
+    - **Aztec (3)**: Golden/orange sky, warm golden ambient
+    - **Nightmare (4)**: Dark red sky, dim red ambient
 
 ## Code Style
 
