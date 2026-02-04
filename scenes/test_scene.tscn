@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bkj8x7vn5qr2p"]
+[gd_scene load_steps=12 format=3 uid="uid://bkj8x7vn5qr2p"]
 
 [ext_resource type="PackedScene" uid="uid://cx8yp7qn2uqyg" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/dimension_object.gd" id="2_dimobj"]
@@ -23,6 +23,12 @@ albedo_color = Color(0.6, 0.1, 0.1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cube"]
 size = Vector3(1, 1.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(8, 4, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
+size = Vector3(8, 4, 0.5)
 
 [node name="TestScene" type="Node3D"]
 
@@ -65,6 +71,21 @@ surface_material_override/0 = SubResource("StandardMaterial3D_aztec")
 visible = false
 mesh = SubResource("BoxMesh_cube")
 surface_material_override/0 = SubResource("StandardMaterial3D_nightmare")
+
+[node name="VikingWall" type="StaticBody3D" parent="." node_paths=PackedStringArray("viking_mesh", "viking_collision")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("2_dimobj")
+viking_mesh = NodePath("VikingWallMesh")
+viking_collision = NodePath("VikingCollision")
+
+[node name="VikingWallMesh" type="MeshInstance3D" parent="VikingWall"]
+visible = false
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("StandardMaterial3D_viking")
+
+[node name="VikingCollision" type="CollisionShape3D" parent="VikingWall"]
+shape = SubResource("BoxShape3D_wall")
+disabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)

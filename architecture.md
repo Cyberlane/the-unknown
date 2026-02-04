@@ -16,8 +16,11 @@
 ### DimensionObject (Base Class)
 - Extends Node3D
 - Exports 4 mesh references (one per dimension)
+- Exports 4 collision shape references (one per dimension)
 - Automatically shows/hides meshes based on active dimension
-- Connect to DimensionManager's signal on _ready()
+- Automatically enables/disables collision shapes based on active dimension
+- Connects to DimensionManager's signal on _ready()
+- Enables dimension-specific geometry and physics (e.g., walls that only exist in certain dimensions)
 
 ### Player Controller
 - First-person CharacterBody3D with mouse look
@@ -29,5 +32,6 @@
 
 ### test_scene.tscn
 - Main test/demo scene
-- Contains: Floor, DirectionalLight3D, Player, Statue
+- Contains: Floor, DirectionalLight3D, Player, Statue, VikingWall
 - Statue uses DimensionObject with 4 colored cubes (gray, blue, gold, red)
+- VikingWall demonstrates dimension-specific collision (only solid in Viking dimension)

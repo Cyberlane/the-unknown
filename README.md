@@ -33,8 +33,11 @@ the-unknown/
 
 - First-person character controller with mouse look
 - Global dimension management system
-- DimensionObject base class for objects that change appearance based on dimension
-- Test scene with a statue that changes color based on the active dimension
+- DimensionObject base class for objects that change appearance and collision based on dimension
+- Dimension-specific collision (walls that only exist in certain dimensions)
+- Test scene demonstrating:
+  - A statue that changes color based on the active dimension
+  - A blue wall that only has collision in the Viking dimension (press 2) - you must switch to another dimension to pass through it
 
 ## Code Style
 
