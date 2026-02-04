@@ -77,10 +77,15 @@
 
 ### DimensionTransitionOverlay (CanvasLayer)
 - Extends CanvasLayer
-- Uses dimension_transition.gdshader for screen-space flash effect
+- Uses enhanced dimension_transition.gdshader with:
+  - Screen-space color flash effect
+  - **Pixelation effect** (screen breaks into pixels)
+  - **Chromatic aberration** (RGB channel separation)
+  - **Glitch spike** at peak of transition
 - Animates shader 'progress' parameter with Tween (0 → 1 → 0)
+- Glitch intensity spikes at transition peak (when dimensions actually swap)
 - Each dimension has a signature color for the transition flash
-- Triggered automatically when dimension changes
+- Configurable glitch settings: intensity, duration, pixelation, aberration
 - Smooth cubic ease in/out animation (default 0.3s duration)
 
 ### NightmareVoices (Node)

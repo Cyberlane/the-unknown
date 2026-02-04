@@ -41,7 +41,7 @@ the-unknown/
 - **DimensionTrigger system** - Area3D triggers that only activate in specific dimensions
 - DimensionObject base class for objects that change appearance and collision based on dimension
 - DimensionEnvironment system with smooth Tween transitions for sky, fog, and exposure
-- Animated transition overlay with color flash effect when switching dimensions
+- Animated transition overlay with color flash, pixelation, and chromatic aberration glitch effects
 - Dimension-specific collision (walls that only exist in certain dimensions)
 - Test scene demonstrating:
   - A statue that changes color based on the active dimension
