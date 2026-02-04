@@ -36,6 +36,16 @@
 - Connects to DimensionManager's signal on _ready() (runtime only)
 - Enables dimension-specific geometry and physics (e.g., walls that only exist in certain dimensions)
 
+### DimensionTrigger (Area3D)
+- @tool script - shows debug visualization in editor
+- Extends Area3D
+- Only fires `dimension_triggered(body)` signal in specific dimension
+- Configurable dimension: NORMAL, VIKING, AZTEC, NIGHTMARE, or ANY
+- Optional one-shot mode (trigger only once)
+- Debug message printed to console when triggered
+- Semi-transparent debug mesh in editor (color-coded by dimension)
+- Perfect for dimension-specific puzzles, secrets, and events
+
 ### DimensionEnvironment (Manager)
 - Extends Node
 - Manages 4 WorldEnvironment nodes (one per dimension)
