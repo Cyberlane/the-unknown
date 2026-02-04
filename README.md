@@ -36,6 +36,7 @@ the-unknown/
 - Global dimension management system
 - **Raycast-based interaction system** - look at objects and press E to interact
 - **Dialogue system** for displaying text from interactable objects
+- **Nightmare dimension voice lines** - random creepy messages appear when entering the Nightmare dimension
 - DimensionObject base class for objects that change appearance and collision based on dimension
 - DimensionEnvironment system for instant sky and ambient lighting changes per dimension
 - Animated transition overlay with color flash effect when switching dimensions
@@ -44,11 +45,12 @@ the-unknown/
   - A statue that changes color based on the active dimension
   - A blue wall that only has collision in the Viking dimension (press 2) - you must switch to another dimension to pass through it
   - An interactable pedestal - look at it and press E to read dialogue
+  - Random voice lines appear when entering the Nightmare dimension
   - Distinct sky colors and ambient lighting for each dimension:
     - **Normal (1)**: Light blue sky, neutral lighting
     - **Viking (2)**: Deep blue sky, cool blue ambient
     - **Aztec (3)**: Golden/orange sky, warm golden ambient
-    - **Nightmare (4)**: Dark red sky, dim red ambient
+    - **Nightmare (4)**: Dark red sky, dim red ambient + creepy voice lines
 
 ## Code Style
 

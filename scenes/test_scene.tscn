@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://bkj8x7vn5qr2p"]
+[gd_scene load_steps=26 format=3 uid="uid://bkj8x7vn5qr2p"]
 
 [ext_resource type="PackedScene" uid="uid://cx8yp7qn2uqyg" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/dimension_object.gd" id="2_dimobj"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/dimension_transition_overlay.gd" id="5_overlay"]
 [ext_resource type="PackedScene" uid="uid://dyh3m8v4n5qr8" path="res://scenes/ui/game_ui.tscn" id="6_gameui"]
 [ext_resource type="Script" path="res://scripts/interactable.gd" id="7_interact"]
+[ext_resource type="Script" path="res://scripts/nightmare_voices.gd" id="8_voices"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 size = Vector3(20, 0.2, 20)
@@ -210,3 +211,9 @@ collision_mask = 0
 shape = SubResource("BoxShape3D_interact")
 
 [node name="GameUI" parent="." instance=ExtResource("6_gameui")]
+
+[node name="NightmareVoices" type="Node" parent="."]
+script = ExtResource("8_voices")
+voice_lines = Array[String](["They're watching you...", "You don't belong here.", "Turn back while you still can.", "The shadows whisper your name...", "This dimension hungers...", "You feel eyes upon you from every corner.", "Something stirs in the darkness.", "Your presence disturbs the void.", "Time moves differently here...", "Do you hear them too?", "The darkness embraces you...", "Escape is an illusion.", "We've been expecting you."])
+auto_dismiss_time = 4.0
+show_on_every_entry = true

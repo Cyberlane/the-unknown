@@ -50,6 +50,15 @@
 - Triggered automatically when dimension changes
 - Smooth cubic ease in/out animation (default 0.3s duration)
 
+### NightmareVoices (Node)
+- Extends Node
+- Listens to dimension_changed signal
+- Displays random voice lines when entering Nightmare dimension
+- Configurable list of creepy/atmospheric strings
+- Auto-dismisses dialogue after configurable time (default 4s)
+- Option to show on every entry or only first time
+- Uses existing DialogueUI for display
+
 ### Player Controller
 - First-person CharacterBody3D with mouse look
 - WASD movement, Space to jump
