@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://scripts/dimension_trigger.gd" id="9_trigger"]
 [ext_resource type="Script" path="res://scripts/test_trigger_handler.gd" id="10_handler"]
 [ext_resource type="Script" path="res://scripts/viking_choice_example.gd" id="11_viking"]
+[ext_resource type="Script" path="res://scripts/dimension_ambient_audio.gd" id="12_ambient"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 size = Vector3(20, 0.2, 20)
@@ -300,3 +301,9 @@ script = ExtResource("8_voices")
 voice_lines = Array[String](["They're watching you...", "You don't belong here.", "Turn back while you still can.", "The shadows whisper your name...", "This dimension hungers...", "You feel eyes upon you from every corner.", "Something stirs in the darkness.", "Your presence disturbs the void.", "Time moves differently here...", "Do you hear them too?", "The darkness embraces you...", "Escape is an illusion.", "We've been expecting you."])
 auto_dismiss_time = 4.0
 show_on_every_entry = true
+
+[node name="DimensionAmbientAudio" type="Node" parent="."]
+script = ExtResource("12_ambient")
+crossfade_duration = 2.0
+silent_volume_db = -80.0
+active_volume_db = 0.0

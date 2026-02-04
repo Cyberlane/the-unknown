@@ -111,6 +111,17 @@
   - Aztec: 1.2x (higher, lighter)
   - Nightmare: 0.7x (lowest, ominous)
 
+### DimensionAmbientAudio (Node)
+- Manages 4 simultaneous ambient audio loops (one per dimension)
+- All loops play constantly at -80db (silent)
+- Cross-fades active dimension to 0db over 2 seconds
+- Cross-fades inactive dimensions back to -80db
+- Keeps all loops synchronized (no phase issues)
+- Smooth Tween-based volume transitions
+- Cubic ease in/out for natural feel
+- Routes to "Ambient" audio bus
+- Configurable crossfade duration and volume levels
+
 ## Scene Structure
 
 ### test_scene.tscn
