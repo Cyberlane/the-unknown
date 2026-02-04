@@ -45,6 +45,12 @@
 - WASD movement, Space to jump
 - Keys 1-4 trigger dimension switching
 - ESC toggles mouse capture
+- AudioStreamPlayer for dimension switch sound effects
+- Dimension-specific pitch variations:
+  - Normal: 1.0x (base pitch)
+  - Viking: 0.85x (lower, heavier)
+  - Aztec: 1.2x (higher, lighter)
+  - Nightmare: 0.7x (lowest, ominous)
 
 ## Scene Structure
 

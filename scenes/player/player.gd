@@ -5,12 +5,37 @@ const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 const MOUSE_SENSITIVITY = 0.002
 
+@export var dimension_switch_sound: AudioStream
+
 @onready var camera = $Camera3D
+@onready var dimension_audio = $DimensionSwitchAudio
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+# Dimension-specific pitch variations for the whoosh sound
+var dimension_pitches = {
+    DimensionManager.Dimension.NORMAL: 1.0,    # Base pitch
+    DimensionManager.Dimension.VIKING: 0.85,   # Lower, heavier
+    DimensionManager.Dimension.AZTEC: 1.2,     # Higher, lighter
+    DimensionManager.Dimension.NIGHTMARE: 0.7  # Lowest, ominous
+}
+
 func _ready():
     Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+    # Connect to dimension changes for audio feedback
+    DimensionManager.dimension_changed.connect(_on_dimension_changed)
+
+    # Set up audio player
+    if dimension_switch_sound:
+        dimension_audio.stream = dimension_switch_sound
+
+func _on_dimension_changed(new_dim):
+    # Play whoosh sound with dimension-specific pitch
+    if dimension_audio.stream:
+        var pitch = dimension_pitches.get(new_dim, 1.0)
+        dimension_audio.pitch_scale = pitch
+        dimension_audio.play()
 
 func _input(event):
     # Mouse look

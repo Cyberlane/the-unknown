@@ -53,5 +53,11 @@ This project uses **4 spaces** for indentation (no tabs). The `.editorconfig` fi
 ## Getting Started
 
 1. Open the project in Godot 4.5
-2. Press F5 to run the test scene
-3. Use number keys 1-4 to switch between dimensions and watch the statue change colors
+2. **(Optional)** Add a whoosh sound effect:
+   - Place an audio file (`.ogg` or `.wav`) in `audio/sfx/`
+   - Open `scenes/player/player.tscn`
+   - Select the Player node
+   - Set the "Dimension Switch Sound" property to your audio file
+   - See `audio/README.md` for where to find free sound effects
+3. Press F5 to run the test scene
+4. Use number keys 1-4 to switch between dimensions and watch the statue change colors
