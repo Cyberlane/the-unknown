@@ -1,8 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://bkj8x7vn5qr2p"]
+[gd_scene load_steps=22 format=3 uid="uid://bkj8x7vn5qr2p"]
 
 [ext_resource type="PackedScene" uid="uid://cx8yp7qn2uqyg" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/dimension_object.gd" id="2_dimobj"]
 [ext_resource type="Script" path="res://scripts/dimension_environment.gd" id="3_dimenv"]
+[ext_resource type="Shader" path="res://materials/shaders/dimension_transition.gdshader" id="4_shader"]
+[ext_resource type="Script" path="res://scripts/dimension_transition_overlay.gd" id="5_overlay"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 size = Vector3(20, 0.2, 20)
@@ -163,3 +165,16 @@ disabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
+
+[node name="TransitionOverlay" type="CanvasLayer" parent="."]
+layer = 100
+script = ExtResource("5_overlay")
+transition_shader = ExtResource("4_shader")
+
+[node name="ColorRect" type="ColorRect" parent="TransitionOverlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

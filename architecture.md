@@ -32,6 +32,14 @@
   - Aztec: Golden/orange sky, warm golden ambient (0.7 energy)
   - Nightmare: Dark red sky, dim red ambient (0.4 energy)
 
+### DimensionTransitionOverlay (CanvasLayer)
+- Extends CanvasLayer
+- Uses dimension_transition.gdshader for screen-space flash effect
+- Animates shader 'progress' parameter with Tween (0 → 1 → 0)
+- Each dimension has a signature color for the transition flash
+- Triggered automatically when dimension changes
+- Smooth cubic ease in/out animation (default 0.3s duration)
+
 ### Player Controller
 - First-person CharacterBody3D with mouse look
 - WASD movement, Space to jump

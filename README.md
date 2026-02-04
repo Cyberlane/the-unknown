@@ -35,6 +35,7 @@ the-unknown/
 - Global dimension management system
 - DimensionObject base class for objects that change appearance and collision based on dimension
 - DimensionEnvironment system for instant sky and ambient lighting changes per dimension
+- Animated transition overlay with color flash effect when switching dimensions
 - Dimension-specific collision (walls that only exist in certain dimensions)
 - Test scene demonstrating:
   - A statue that changes color based on the active dimension
