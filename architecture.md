@@ -59,21 +59,28 @@
 - Semi-transparent debug mesh in editor (color-coded by dimension)
 - Perfect for dimension-specific puzzles, secrets, and events
 
-### DimensionEnvironment (Manager)
+### AtmosphereManager (Professional Manager)
 - Extends Node
+- **Unified system** managing both Environment and DirectionalLight3D
 - Manages 4 Environment resources (one per dimension)
-- **Smooth transitions** using Tween system (0.5s default)
+- Manages dimension-specific light settings (color and energy per dimension)
+- **Smooth interpolated transitions** using Tween system (0.6s default)
+- **Coordinates with shader overlay** - triggers transition effect to peak at midpoint (0.3s)
 - Transitions multiple properties simultaneously:
   - Sky colors (top, horizon, ground)
   - Ambient light color and energy
   - Fog density, color, and energy
   - Exposure/tonemap values
+  - Directional light color
+  - Directional light energy
 - Configurable transition toggles for sky, fog, and exposure
-- Each dimension has unique atmosphere:
-  - Normal: Light blue sky, neutral ambient, light fog, 1.0 exposure
-  - Viking: Deep blue sky, cool blue ambient, thick fog, 0.85 exposure (darker)
-  - Aztec: Golden/orange sky, warm ambient, moderate fog, 1.15 exposure (brighter)
-  - Nightmare: Dark red sky, dim red ambient, heavy fog, 0.7 exposure (darkest)
+- Each dimension has unique atmosphere and lighting:
+  - Normal: Light blue sky, neutral ambient, light fog, 1.0 exposure, warm white light (1.0 energy)
+  - Viking: Deep blue sky, cool blue ambient, thick fog, 0.85 exposure, cool blue light (0.85 energy - darker)
+  - Aztec: Golden/orange sky, warm ambient, moderate fog, 1.15 exposure, warm golden light (1.2 energy - brighter)
+  - Nightmare: Dark red sky, dim red ambient, heavy fog, 0.7 exposure, dim red light (0.6 energy - darkest)
+- Uses cubic ease in/out for smooth, professional feel
+- All transitions happen in parallel for synchronized atmosphere changes
 
 ### DimensionTransitionOverlay (CanvasLayer)
 - Extends CanvasLayer
@@ -87,6 +94,8 @@
 - Each dimension has a signature color for the transition flash
 - Configurable glitch settings: intensity, duration, pixelation, aberration
 - Smooth cubic ease in/out animation (default 0.3s duration)
+- **Supports custom duration** via `play_transition_with_duration()` for external coordination
+- AtmosphereManager triggers this to peak at midpoint, hiding mesh-swapping pops
 
 ### NightmareVoices (Node)
 - Extends Node

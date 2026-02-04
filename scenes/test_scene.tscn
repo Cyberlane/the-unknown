@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cx8yp7qn2uqyg" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/dimension_object.gd" id="2_dimobj"]
-[ext_resource type="Script" path="res://scripts/dimension_environment.gd" id="3_dimenv"]
+[ext_resource type="Script" path="res://scripts/atmosphere_manager.gd" id="3_dimenv"]
 [ext_resource type="Shader" path="res://materials/shaders/dimension_transition.gdshader" id="4_shader"]
 [ext_resource type="Script" path="res://scripts/dimension_transition_overlay.gd" id="5_overlay"]
 [ext_resource type="PackedScene" uid="uid://dyh3m8v4n5qr8" path="res://scenes/ui/game_ui.tscn" id="6_gameui"]
@@ -155,12 +155,26 @@ fog_density = 0.005
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_normal")
 
-[node name="EnvironmentManager" type="Node" parent="."]
+[node name="AtmosphereManager" type="Node" parent="." node_paths=PackedStringArray("directional_light", "transition_overlay")]
 script = ExtResource("3_dimenv")
 normal_environment = SubResource("Environment_normal")
 viking_environment = SubResource("Environment_viking")
 aztec_environment = SubResource("Environment_aztec")
 nightmare_environment = SubResource("Environment_nightmare")
+normal_light_color = Color(1, 0.95, 0.9, 1)
+normal_light_energy = 1.0
+viking_light_color = Color(0.7, 0.8, 1, 1)
+viking_light_energy = 0.85
+aztec_light_color = Color(1, 0.9, 0.7, 1)
+aztec_light_energy = 1.2
+nightmare_light_color = Color(0.8, 0.4, 0.4, 1)
+nightmare_light_energy = 0.6
+transition_duration = 0.6
+smooth_sky_transition = true
+smooth_fog_transition = true
+smooth_exposure_transition = true
+directional_light = NodePath("../DirectionalLight3D")
+transition_overlay = NodePath("../TransitionOverlay")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)

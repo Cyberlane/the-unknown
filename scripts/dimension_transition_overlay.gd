@@ -52,7 +52,14 @@ func _on_dimension_changed(new_dim):
     # Animate the transition effect
     _play_transition()
 
-func _play_transition():
+# Public method to play transition with custom duration
+func play_transition_with_duration(duration: float):
+    _play_transition_internal(duration)
+
+func _play_transition(duration: float = transition_duration):
+    _play_transition_internal(duration)
+
+func _play_transition_internal(duration: float):
     # Kill any existing tweens
     if tween:
         tween.kill()
@@ -65,13 +72,13 @@ func _play_transition():
     tween.set_trans(Tween.TRANS_CUBIC)
 
     # Animate progress: 0 → 1 → 0 (fade in, then fade out)
-    tween.tween_method(_set_progress, 0.0, 1.0, transition_duration / 2.0)
-    tween.tween_method(_set_progress, 1.0, 0.0, transition_duration / 2.0)
+    tween.tween_method(_set_progress, 0.0, 1.0, duration / 2.0)
+    tween.tween_method(_set_progress, 1.0, 0.0, duration / 2.0)
 
     # Trigger glitch effect at the peak (when progress = 1.0)
     if enable_glitch:
         # Wait until peak, then trigger glitch
-        var delay_to_peak = transition_duration / 2.0
+        var delay_to_peak = duration / 2.0
         get_tree().create_timer(delay_to_peak).timeout.connect(_trigger_glitch)
 
 func _trigger_glitch():
