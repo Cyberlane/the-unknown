@@ -40,7 +40,7 @@ the-unknown/
 - **Nightmare dimension voice lines** - random creepy messages appear when entering the Nightmare dimension
 - **DimensionTrigger system** - Area3D triggers that only activate in specific dimensions
 - DimensionObject base class for objects that change appearance and collision based on dimension
-- DimensionEnvironment system for instant sky and ambient lighting changes per dimension
+- DimensionEnvironment system with smooth Tween transitions for sky, fog, and exposure
 - Animated transition overlay with color flash effect when switching dimensions
 - Dimension-specific collision (walls that only exist in certain dimensions)
 - Test scene demonstrating:

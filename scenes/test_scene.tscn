@@ -73,9 +73,15 @@ sky_material = SubResource("ProceduralSkyMaterial_normal")
 [sub_resource type="Environment" id="Environment_normal"]
 background_mode = 2
 sky = SubResource("Sky_normal")
+tonemap_mode = 2
+tonemap_exposure = 1.0
 ambient_light_source = 3
 ambient_light_color = Color(0.8, 0.8, 0.8, 1)
 ambient_light_energy = 0.5
+fog_enabled = true
+fog_light_color = Color(0.7, 0.8, 0.9, 1)
+fog_light_energy = 0.5
+fog_density = 0.001
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_viking"]
 sky_top_color = Color(0.1, 0.3, 0.6, 1)
@@ -89,9 +95,15 @@ sky_material = SubResource("ProceduralSkyMaterial_viking")
 [sub_resource type="Environment" id="Environment_viking"]
 background_mode = 2
 sky = SubResource("Sky_viking")
+tonemap_mode = 2
+tonemap_exposure = 0.85
 ambient_light_source = 3
 ambient_light_color = Color(0.4, 0.6, 0.9, 1)
 ambient_light_energy = 0.6
+fog_enabled = true
+fog_light_color = Color(0.5, 0.7, 0.9, 1)
+fog_light_energy = 0.8
+fog_density = 0.003
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_aztec"]
 sky_top_color = Color(0.9, 0.6, 0.2, 1)
@@ -105,9 +117,15 @@ sky_material = SubResource("ProceduralSkyMaterial_aztec")
 [sub_resource type="Environment" id="Environment_aztec"]
 background_mode = 2
 sky = SubResource("Sky_aztec")
+tonemap_mode = 2
+tonemap_exposure = 1.15
 ambient_light_source = 3
 ambient_light_color = Color(0.95, 0.8, 0.5, 1)
 ambient_light_energy = 0.7
+fog_enabled = true
+fog_light_color = Color(0.9, 0.75, 0.4, 1)
+fog_light_energy = 0.6
+fog_density = 0.002
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nightmare"]
 sky_top_color = Color(0.3, 0.05, 0.05, 1)
@@ -121,9 +139,15 @@ sky_material = SubResource("ProceduralSkyMaterial_nightmare")
 [sub_resource type="Environment" id="Environment_nightmare"]
 background_mode = 2
 sky = SubResource("Sky_nightmare")
+tonemap_mode = 2
+tonemap_exposure = 0.7
 ambient_light_source = 3
 ambient_light_color = Color(0.6, 0.2, 0.2, 1)
 ambient_light_energy = 0.4
+fog_enabled = true
+fog_light_color = Color(0.5, 0.1, 0.1, 1)
+fog_light_energy = 1.0
+fog_density = 0.005
 
 [node name="TestScene" type="Node3D"]
 

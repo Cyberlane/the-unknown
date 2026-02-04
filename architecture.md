@@ -61,13 +61,19 @@
 
 ### DimensionEnvironment (Manager)
 - Extends Node
-- Manages 4 WorldEnvironment nodes (one per dimension)
-- Instantly switches active environment when dimension changes
-- Each dimension has unique sky colors and ambient lighting:
-  - Normal: Light blue sky, neutral white ambient (0.5 energy)
-  - Viking: Deep blue sky, cool blue ambient (0.6 energy)
-  - Aztec: Golden/orange sky, warm golden ambient (0.7 energy)
-  - Nightmare: Dark red sky, dim red ambient (0.4 energy)
+- Manages 4 Environment resources (one per dimension)
+- **Smooth transitions** using Tween system (0.5s default)
+- Transitions multiple properties simultaneously:
+  - Sky colors (top, horizon, ground)
+  - Ambient light color and energy
+  - Fog density, color, and energy
+  - Exposure/tonemap values
+- Configurable transition toggles for sky, fog, and exposure
+- Each dimension has unique atmosphere:
+  - Normal: Light blue sky, neutral ambient, light fog, 1.0 exposure
+  - Viking: Deep blue sky, cool blue ambient, thick fog, 0.85 exposure (darker)
+  - Aztec: Golden/orange sky, warm ambient, moderate fog, 1.15 exposure (brighter)
+  - Nightmare: Dark red sky, dim red ambient, heavy fog, 0.7 exposure (darkest)
 
 ### DimensionTransitionOverlay (CanvasLayer)
 - Extends CanvasLayer
