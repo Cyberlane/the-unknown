@@ -40,6 +40,9 @@ the-unknown/
 - **Dialogue system** for displaying text from interactable objects
 - **Nightmare dimension voice lines** - random creepy messages appear when entering the Nightmare dimension
 - **DimensionTrigger system** - Area3D triggers that only activate in specific dimensions
+- **DimensionGate system** - portals and lock zones for controlling dimension swapping:
+  - **Passive mode**: Prevents dimension switching while inside (lock zones for puzzles/bosses)
+  - **Active mode**: Forces player to specific dimension on entry (portals between dimension areas)
 - DimensionObject base class for objects that change appearance and collision based on dimension
 - **LevelRegion system** - proximity-based level streaming with automatic loading/unloading based on player distance
 - **Professional AtmosphereManager** - coordinates smooth 0.6s transitions for sky, fog, exposure, and directional lighting

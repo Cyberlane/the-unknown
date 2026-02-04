@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dimension_gate_active_001"]
+
+[ext_resource type="Script" path="res://scripts/dimension_gate.gd" id="1_gate"]
+
+[node name="ActiveGate" type="Area3D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_gate")
+mode = 1
+target_dimension = 1
+gate_size = Vector3(4, 5, 1)
+force_once = false
+show_transition_effect = true

@@ -21,7 +21,8 @@
 - Global singleton for managing dimension state
 - Emits `dimension_changed` signal when dimensions switch
 - Enum: NORMAL, VIKING, AZTEC, NIGHTMARE
-- Method: `switch_to(dimension_index: int)`
+- Method: `switch_to(dimension_index: int)` - checks `dimension_locked` before switching
+- Property: `dimension_locked: bool` - when true, prevents dimension switching (used by DimensionGate passive mode)
 
 ### ChoiceManager (Autoload)
 - Global singleton for tracking player choices and alignment
@@ -79,6 +80,24 @@
 - Debug message printed to console when triggered
 - Semi-transparent debug mesh in editor (color-coded by dimension)
 - Perfect for dimension-specific puzzles, secrets, and events
+
+### DimensionGate (Area3D)
+- @tool script - visual placeholder visible in editor
+- Extends Area3D
+- Two modes: PASSIVE (lock zone) and ACTIVE (portal)
+- **Passive Mode**: Prevents dimension swapping while player is inside
+  - Sets `DimensionManager.dimension_locked = true` on entry
+  - Gray semi-transparent visual with "DIMENSION LOCK ZONE" label
+  - Perfect for boss arenas, puzzles, story sequences
+- **Active Mode**: Forces player to specific dimension on entry
+  - Automatically calls `DimensionManager.switch_to(target_dimension)`
+  - Color-coded visual matching target dimension (blue/gold/red/gray)
+  - Label shows "PORTAL → [DIMENSION]"
+  - Optional `force_once` to prevent repeated forcing
+- Configurable gate size (width, height, depth)
+- Automatic placeholder mesh and collision shape generation
+- Public API: `is_player_inside()`, `trigger()`, `set_mode()`, `set_target_dimension()`
+- Example scenes: `passive_gate_example.tscn`, `active_gate_example.tscn`
 
 ### AtmosphereManager (Professional Manager)
 - Extends Node

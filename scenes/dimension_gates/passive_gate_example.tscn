@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dimension_gate_passive_001"]
+
+[ext_resource type="Script" path="res://scripts/dimension_gate.gd" id="1_gate"]
+
+[node name="PassiveGate" type="Area3D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_gate")
+mode = 0
+gate_size = Vector3(6, 4, 2)
