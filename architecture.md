@@ -24,12 +24,16 @@
 - Method: `switch_to(dimension_index: int)`
 
 ### DimensionObject (Base Class)
+- @tool script - works in both editor and runtime
 - Extends Node3D
 - Exports 4 mesh references (one per dimension)
 - Exports 4 collision shape references (one per dimension)
-- Automatically shows/hides meshes based on active dimension
-- Automatically enables/disables collision shapes based on active dimension
-- Connects to DimensionManager's signal on _ready()
+- **Editor Preview**: "Preview Dimension" dropdown in Inspector
+  - Change dimension preview in editor without running game
+  - Meshes swap visibility instantly in viewport
+- Runtime: Automatically shows/hides meshes based on active dimension
+- Runtime: Automatically enables/disables collision shapes based on active dimension
+- Connects to DimensionManager's signal on _ready() (runtime only)
 - Enables dimension-specific geometry and physics (e.g., walls that only exist in certain dimensions)
 
 ### DimensionEnvironment (Manager)

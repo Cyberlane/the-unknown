@@ -56,6 +56,14 @@ the-unknown/
 
 This project uses **4 spaces** for indentation (no tabs). The `.editorconfig` file ensures consistent formatting across editors.
 
+## Editor Workflow Tips
+
+**Previewing Dimensions**: DimensionObject is a @tool script. When editing objects with dimension variants:
+1. Select a DimensionObject node in the scene tree
+2. In the Inspector, find "Preview Dimension" under "Editor Preview"
+3. Change the dropdown (Normal/Viking/Aztec/Nightmare)
+4. The meshes will instantly swap in the viewport without running the game!
+
 ## Getting Started
 
 1. Open the project in Godot 4.5
