@@ -24,6 +24,9 @@ var dimension_pitches = {
 }
 
 func _ready():
+    # Add to "player" group for LevelRegion proximity detection
+    add_to_group("player")
+
     Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
     # Connect to dimension changes for audio feedback

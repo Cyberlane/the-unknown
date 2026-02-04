@@ -40,6 +40,7 @@ the-unknown/
 - **Nightmare dimension voice lines** - random creepy messages appear when entering the Nightmare dimension
 - **DimensionTrigger system** - Area3D triggers that only activate in specific dimensions
 - DimensionObject base class for objects that change appearance and collision based on dimension
+- **LevelRegion system** - proximity-based level streaming with automatic loading/unloading based on player distance
 - **Professional AtmosphereManager** - coordinates smooth 0.6s transitions for sky, fog, exposure, and directional lighting
 - Animated transition overlay with color flash, pixelation, and chromatic aberration glitch effects (peaks at midpoint to hide mesh swaps)
 - **Cross-fading ambient audio system** - 4 loops play simultaneously, active dimension fades in

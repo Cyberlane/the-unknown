@@ -131,6 +131,30 @@
 - Routes to "Ambient" audio bus
 - Configurable crossfade duration and volume levels
 
+### LevelRegion (Proximity-Based Level Streaming)
+- Extends Node3D
+- **Level chunk/region system** for building large explorable worlds
+- Holds 4 PackedScene references (one per dimension)
+- **Automatic scene swapping** when dimensions change
+- **Proximity-based loading/unloading** based on player distance
+- Configurable load_distance (default: 50m) and unload_distance (default: 75m)
+- Hysteresis prevents thrashing (unload_distance > load_distance)
+- Periodic distance checking (default: 0.5s interval)
+- Finds player automatically via "player" group
+- Public API for manual control:
+  - `force_load()` / `force_unload()` - manual override
+  - `is_region_loaded()` - check load state
+  - `get_distance_to_player()` - current distance
+  - `set_player_reference()` - manual player assignment
+- Signals: `region_loaded(dimension)`, `region_unloaded()`
+- Debug mode with console messages and visual indicators
+- Foundation for level design workflow:
+  - Hand-placed chunks for unique areas
+  - Grid-based generation for large worlds
+  - Hybrid approach mixing both techniques
+- Memory efficient - only loaded regions consume memory
+- Example chunks provided in `scenes/level_regions/example_chunks/`
+
 ## Scene Structure
 
 ### test_scene.tscn
