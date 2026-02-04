@@ -35,6 +35,7 @@ the-unknown/
 - First-person character controller with mouse look
 - Global dimension management system
 - **Choice & alignment system** - track player decisions and build trust with different dimensions
+- **PersistenceManager** - global state tracking for pickups, doors, switches that persists across dimensions and scene reloads
 - **Raycast-based interaction system** - look at objects and press E to interact
 - **Dialogue system** for displaying text from interactable objects
 - **Nightmare dimension voice lines** - random creepy messages appear when entering the Nightmare dimension

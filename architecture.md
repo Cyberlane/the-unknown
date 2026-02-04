@@ -36,6 +36,27 @@
 - Helpers: `get_alignment_type()`, `get_trust_level()`
 - Save/load support ready for implementation
 
+### PersistenceManager (Autoload)
+- Global singleton for tracking object states across dimensions and scene reloads
+- Dictionary-based storage: `{ "unique_id": { state_data } }`
+- **Core API**:
+  - `register_object(id, initial_state)` - Register object with unique ID
+  - `set_object_state(id, state)` - Replace entire state
+  - `update_object_state(id, partial_state)` - Update specific keys
+  - `get_object_state(id)` - Retrieve full state dictionary
+  - `has_object_state(id)` - Check if object is registered
+  - `set_object_property(id, property, value)` - Set single property
+  - `get_object_property(id, property, default)` - Get single property
+- **Common helpers**:
+  - `mark_as_collected(id)` / `is_collected(id)` - For pickups
+  - `mark_as_opened(id)` / `is_opened(id)` - For doors/chests
+  - `mark_as_activated(id)` / `is_activated(id)` - For switches/levers
+- **Signals**: `object_state_changed`, `object_state_registered`
+- **Save/Load**: `save_to_file()`, `load_from_file()` - JSON-based persistence to disk
+- **Debug**: `debug_print_all_states()` - Print all tracked objects
+- **Use case**: Pickups stay collected, doors stay open, switches stay activated across dimension changes and LevelRegion reloads
+- Example implementations: `scripts/pickup.gd`, `scripts/persistent_door.gd`
+
 ### DimensionObject (Base Class)
 - @tool script - works in both editor and runtime
 - Extends Node3D
