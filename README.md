@@ -34,6 +34,7 @@ the-unknown/
 
 - First-person character controller with mouse look
 - Global dimension management system
+- **Choice & alignment system** - track player decisions and build trust with different dimensions
 - **Raycast-based interaction system** - look at objects and press E to interact
 - **Dialogue system** for displaying text from interactable objects
 - **Nightmare dimension voice lines** - random creepy messages appear when entering the Nightmare dimension
@@ -46,6 +47,7 @@ the-unknown/
   - A statue that changes color based on the active dimension
   - A blue wall that only has collision in the Viking dimension (press 2) - you must switch to another dimension to pass through it
   - An interactable pedestal - look at it and press E to read dialogue
+  - A Viking shrine - interact to gain Viking trust (tracks your choices!)
   - Random voice lines appear when entering the Nightmare dimension
   - A secret Aztec trigger - only activates when you're in the Aztec dimension!
   - Distinct sky colors and ambient lighting for each dimension:

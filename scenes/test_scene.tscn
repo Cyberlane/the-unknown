@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bkj8x7vn5qr2p"]
+[gd_scene load_steps=31 format=3 uid="uid://bkj8x7vn5qr2p"]
 
 [ext_resource type="PackedScene" uid="uid://cx8yp7qn2uqyg" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/dimension_object.gd" id="2_dimobj"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/nightmare_voices.gd" id="8_voices"]
 [ext_resource type="Script" path="res://scripts/dimension_trigger.gd" id="9_trigger"]
 [ext_resource type="Script" path="res://scripts/test_trigger_handler.gd" id="10_handler"]
+[ext_resource type="Script" path="res://scripts/viking_choice_example.gd" id="11_viking"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 size = Vector3(20, 0.2, 20)
@@ -43,6 +44,17 @@ size = Vector3(1.2, 1.2, 1.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_trigger"]
 size = Vector3(3, 3, 3)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_shrine"]
+top_radius = 0.4
+bottom_radius = 0.5
+height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shrine"]
+albedo_color = Color(0.3, 0.6, 0.8, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shrine"]
+size = Vector3(1, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wall"]
 size = Vector3(8, 4, 0.5)
@@ -225,6 +237,32 @@ debug_message = "You discovered the Aztec secret trigger!"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AztecTrigger"]
 shape = SubResource("BoxShape3D_trigger")
+
+[node name="VikingShrine" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.3, -3)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("11_viking")
+interaction_prompt = "Press E to honor the Viking spirits"
+dialogue_text = ""
+trust_amount = 10
+choice_id = "viking_shrine_honored"
+trust_message = "⚔️ The Viking spirits recognize your respect. ⚔️
+
++10 Viking Trust
+
+The old ways are not forgotten."
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VikingShrine"]
+mesh = SubResource("CylinderMesh_shrine")
+surface_material_override/0 = SubResource("StandardMaterial3D_shrine")
+
+[node name="InteractionArea" type="Area3D" parent="VikingShrine"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VikingShrine/InteractionArea"]
+shape = SubResource("BoxShape3D_shrine")
 
 [node name="TriggerHandler" type="Node" parent="." node_paths=PackedStringArray("trigger")]
 script = ExtResource("10_handler")

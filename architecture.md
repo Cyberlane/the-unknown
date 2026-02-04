@@ -23,6 +23,19 @@
 - Enum: NORMAL, VIKING, AZTEC, NIGHTMARE
 - Method: `switch_to(dimension_index: int)`
 
+### ChoiceManager (Autoload)
+- Global singleton for tracking player choices and alignment
+- Tracks `alignment_score` (-100 to 100): darker vs lighter choices
+- Tracks dimension-specific trust values (0 to 100):
+  - `viking_trust`: Trust with Viking spirits
+  - `aztec_trust`: Trust with Aztec civilization
+  - `nightmare_trust`: Trust with nightmare entities
+- Methods: `modify_alignment()`, `modify_viking_trust()`, etc.
+- Records all choices with timestamps and metadata
+- Emits signals on value changes
+- Helpers: `get_alignment_type()`, `get_trust_level()`
+- Save/load support ready for implementation
+
 ### DimensionObject (Base Class)
 - @tool script - works in both editor and runtime
 - Extends Node3D
