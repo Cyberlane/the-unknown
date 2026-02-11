@@ -145,24 +145,18 @@ func _hide_interaction_prompt() -> void:
     var ui = get_tree().get_first_node_in_group("interaction_ui")
     if ui and ui.has_method("hide_prompt"):
         ui.hide_prompt()
-extends KinematicBody3D
+extends CharacterBody3D
 
-var speed = 10.0
+# Define speed of the player
+export var speed: float = 5.0
 
 func _ready():
-    pass # Initialization code goes here
+    pass # Initialization code here
 
 func _process(delta):
-    var velocity = Vector3.ZERO
+    var direction = Input.get_vector("ui_right", "ui_left", "ui_down", "ui_up")
+    if direction.length() > 0:
+        direction = direction.normalized()
     
-    if Input.is_action_pressed("ui_right"):
-        velocity.x += 1
-    if Input.is_action_pressed("ui_left"):
-        velocity.x -= 1
-    if Input.is_action_pressed("ui_down"):
-        velocity.z += 1
-    if Input.is_action_pressed("ui_up"):
-        velocity.z -= 1
-    
-    velocity = velocity.normalized() * speed
-    move_and_slide(velocity)
+    velocity = direction * speed
+    move_and_slide()
