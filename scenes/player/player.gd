@@ -147,16 +147,18 @@ func _hide_interaction_prompt() -> void:
         ui.hide_prompt()
 extends CharacterBody3D
 
-# Define speed of the player
+# Define movement speed
 export var speed: float = 5.0
 
 func _ready():
     pass # Initialization code here
 
-func _process(delta):
+func _physics_process(delta):
+    # Get input direction
     var direction = Input.get_vector("ui_right", "ui_left", "ui_down", "ui_up")
+    
+    # Calculate velocity based on input and move the character
     if direction.length() > 0:
         direction = direction.normalized()
-    
-    velocity = direction * speed
-    move_and_slide()
+        set_velocity(direction * speed)
+        move_and_slide()
