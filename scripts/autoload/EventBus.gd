@@ -1,11 +1,15 @@
-extends Node
+# EventBus autoload singleton  (signal-based communication hub)
+extends Node2D
 
-class_name EventBus
+var _event_listeners = {}
 
-# Signal emitted when an event is received
-signal event_received(event: String, data)
+func emit(event, data):
+    if not _event_listeners[event]:
+        return
+    for listener in _event_listeners[event]:
+        listener.notify(data)
 
-# Function to emit an event
-func emit_event(event: String, data := null):
-    # Emit the 'event_received' signal with the provided event and data
-    emit_signal("event_received", event, data)
+func connect(event, callback):
+    if not _event_listeners[event]:
+         _event_listeners[event] = []
+    _event_listeners[event].append(callback)
