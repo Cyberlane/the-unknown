@@ -35,3 +35,9 @@ dist/
 # AI Agent Generated Files
 .ai_progress.json
 .validation_log.json
+
+# Godot 4.x specific ignores
+.windows/
+.macos/
+.linux/
+.project.godot
