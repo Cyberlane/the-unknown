@@ -30,3 +30,8 @@ dist/
 
 # Logs
 *.log
+.aider*
+
+# AI Agent Generated Files
+.ai_progress.json
+.validation_log.json
