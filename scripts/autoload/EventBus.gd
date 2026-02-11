@@ -1,4 +1,4 @@
-# EventBus autoload singleton  (signal-based communication hub)
+# EventBus autoload singleton   (signal-based communication hub)
 extends Node2D
 
 var _event_listeners = {}
@@ -12,4 +12,4 @@ func emit(event, data):
 func connect(event, callback):
     if not _event_listeners[event]:
          _event_listeners[event] = []
-    _event_listeners[event].append(callback)
+     _event_listeners[event].append(callback)
