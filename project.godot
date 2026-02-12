@@ -17,7 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-DimensionManager="*res://scripts/autoload/dimension_manager.gd"
+EventBus="*res://scripts/autoloads/event_bus.gd"
+EditorMode="*res://scripts/autoloads/editor_mode.gd"
+DimensionManager="*res://scripts/autoloads/dimension_manager.gd"
 
 [input]
 
