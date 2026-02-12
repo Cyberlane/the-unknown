@@ -41,4 +41,6 @@ func get_process_frames_per_second() -> int:
 
 func get_current_state() -> String:
     # Implement this function to return the current state of your game
-    return "None"
+    # For example, you might use a global variable or an event bus to determine the current state
+    var current_state = "None"  # Replace with actual logic
+    return current_state
