@@ -48,17 +48,17 @@ func _on_dimension_changed(new_dim):
 
 func _update_visibility(active_dim: int):
     # Update mesh visibility
-    if normal_mesh: normal_mesh.visible = (active_dim == PreviewDimension.NORMAL)
-    if viking_mesh: viking_mesh.visible = (active_dim == PreviewDimension.VIKING)
-    if aztec_mesh: aztec_mesh.visible = (active_dim == PreviewDimension.AZTEC)
-    if nightmare_mesh: nightmare_mesh.visible = (active_dim == PreviewDimension.NIGHTMARE)
+    normal_mesh.visible = (active_dim == PreviewDimension.NORMAL) if normal_mesh else false
+    viking_mesh.visible = (active_dim == PreviewDimension.VIKING) if viking_mesh else false
+    aztec_mesh.visible = (active_dim == PreviewDimension.AZTEC) if aztec_mesh else false
+    nightmare_mesh.visible = (active_dim == PreviewDimension.NIGHTMARE) if nightmare_mesh else false
 
     # Update collision shape enabled state (only at runtime, not in editor)
     if not Engine.is_editor_hint():
-        if normal_collision: normal_collision.disabled = (active_dim != PreviewDimension.NORMAL)
-        if viking_collision: viking_collision.disabled = (active_dim != PreviewDimension.VIKING)
-        if aztec_collision: aztec_collision.disabled = (active_dim != PreviewDimension.AZTEC)
-        if nightmare_collision: nightmare_collision.disabled = (active_dim != PreviewDimension.NIGHTMARE)
+        normal_collision.disabled = (active_dim != PreviewDimension.NORMAL) if normal_collision else true
+        viking_collision.disabled = (active_dim != PreviewDimension.VIKING) if viking_collision else true
+        aztec_collision.disabled = (active_dim != PreviewDimension.AZTEC) if aztec_collision else true
+        nightmare_collision.disabled = (active_dim != PreviewDimension.NIGHTMARE) if nightmare_collision else true
 
     # Update material based on active dimension
     _update_material(active_dim)
