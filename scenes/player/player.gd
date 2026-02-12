@@ -68,3 +68,7 @@ func _input(event):
                 is_sprinting = false
             elif event.scancode == KEY_C:
                 is_crouching = false
+
+## Public API: Check if the player is in a specific dimension
+func is_in_dimension(dimension: DimensionManager.Dimension) -> bool:
+    return DimensionManager.current_dimension == dimension

@@ -10,18 +10,18 @@ extends Area3D
 enum GateMode { PASSIVE, ACTIVE }
 
 @export_group("Gate Settings")
-@export var mode: GateMode = GateMode.PASSIVE:
+@export var mode: GateMode = GateMode.PASSIVE
     set(value):
         mode = value
         _update_visual()
 
-@export var target_dimension: DimensionManager.Dimension = DimensionManager.Dimension.NORMAL:
+@export var target_dimension: DimensionManager.Dimension = DimensionManager.Dimension.NORMAL
     set(value):
         target_dimension = value
         _update_visual()
 
 @export_group("Visual Settings")
-@export var gate_size: Vector3 = Vector3(4, 4, 0.5):
+@export var gate_size: Vector3 = Vector3(4, 4, 0.5)
     set(value):
         gate_size = value
         _update_visual()
@@ -32,6 +32,10 @@ enum GateMode { PASSIVE, ACTIVE }
 @export_group("Active Mode Settings")
 @export var force_once: bool = false  ## Only force dimension change once per entry
 @export var show_transition_effect: bool = true
+
+# Dimension tags
+@export_group("Dimension Tags")
+@export var dimension_tags: Array[String] = []
 
 # Internal state
 var player_inside: bool = false
