@@ -1,0 +1,7 @@
+extends Resource
+
+export var movement_speed: float = 5.0
+export var sprint_multiplier: float = 2.0
+export var crouch_multiplier: float = 0.5
+export var head_bob_amplitude: float = 0.1
+export var head_bob_frequency: float = 8.0

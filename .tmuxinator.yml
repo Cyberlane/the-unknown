@@ -1,0 +1,47 @@
+name: the-unknown-ai-studio
+root: ./
+
+on_project_start:
+  - ollama pull qwen2.5-coder:7b
+  - ollama pull qwen2.5-coder:14b
+  - ollama pull deepseek-coder:6.7b
+
+on_project_exit:
+  - ollama stop qwen2.5-coder:7b
+  - ollama stop qwen2.5-coder:14b
+  - ollama stop deepseek-coder:6.7b
+
+windows:
+  - Orchestrator:
+      layout: main-vertical
+      panes:
+        # Main orchestrator - runs continuously (3 tasks per iteration)
+        - python3 scripts/ai_tools/agent_orchestrator.py --continuous 3
+        # Progress monitor - updates every 30 seconds
+        - watch -n 30 "python3 scripts/ai_tools/progress_reporter.py"
+
+  - Validation:
+      layout: even-horizontal
+      panes:
+        # Continuous build validator - checks every 60 seconds
+        - python3 scripts/ai_tools/validator_agent.py 60
+        # Git activity monitor
+        - watch -n 15 "git log -n 8 --oneline --graph --decorate && echo '---' && git status --short"
+
+  - GitHub:
+      panes:
+        # GitHub issue tracker - shows open issues
+        - watch -n 30 "gh issue list --limit 10 && echo '---' && gh issue list --state closed --limit 5"
+
+  - Resources:
+      layout: even-horizontal
+      panes:
+        # System resources - monitor performance
+        - top -u -s 5 -o mem
+        # Ollama status - ensure models are loaded
+        - watch -n 10 "ollama ps && echo '---' && ollama list | grep -E 'qwen2.5-coder|deepseek-coder'"
+
+  - Manual:
+      panes:
+        # Manual intervention pane for quick fixes
+        - echo "🛠️  Manual Intervention Pane - Use for quick fixes or aider sessions" && zsh
