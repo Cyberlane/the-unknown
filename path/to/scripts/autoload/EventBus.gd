@@ -1,14 +1,20 @@
-[gd_scene load_steps=4 format=2]
+extends Node
 
-[node name="EditorMode" type="Node"]
+# Dictionary to hold event listeners
+var _listeners = {}
 
-[node name="Camera" parent="." type="Camera3D"]
-transform/translation = Vector3( 0, 10, -10 )
-transform/basis = Basis( 0.7071067811865476, 0, 0.7071067811865476, 0, 1, 0, -0.7071067811865476, 0, 0.7071067811865476 )
-current = true
+func add_listener(event_name: String, callback: Callable):
+    if event_name not in _listeners:
+        _listeners[event_name] = []
+    _listeners[event_name].append(callback)
 
-[node name="FreeFlyCamera" parent="." type="CharacterBody3D"]
-transform/translation = Vector3( 0, 10, -10 )
-collision_shape/shapes/0/extents = Vector3( 0.5, 0.5, 0.5 )
+func remove_listener(event_name: String, callback: Callable):
+    if event_name in _listeners:
+        _listeners[event_name].erase(callback)
+        if _listeners[event_name].size() == 0:
+            _listeners.erase(event_name)
 
-[node name="GridSnapping" parent="FreeFlyCamera" type="Node"]
+func emit_event(event_name: String, *args):
+    if event_name in _listeners:
+        for listener in _listeners[event_name]:
+            listener.call_func(*args)
