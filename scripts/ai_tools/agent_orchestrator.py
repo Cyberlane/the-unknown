@@ -120,6 +120,89 @@ class AgentOrchestrator:
         except Exception as e:
             print(f"⚠️  Cleanup failed: {e}")
 
+    def get_urgent_github_issues(self) -> List[Task]:
+        """Fetch open urgent GitHub issues and convert them to tasks"""
+        print("🔍 Checking for urgent backlog issues...")
+
+        try:
+            result = subprocess.run(
+                ["gh", "issue", "list",
+                 "--label", "urgent",
+                 "--state", "open",
+                 "--json", "number,title,body,labels"],
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode != 0:
+                print("⚠️  Failed to fetch GitHub issues")
+                return []
+
+            issues = json.loads(result.stdout)
+            tasks = []
+
+            for issue in issues:
+                # Parse the issue to extract missing deliverables
+                task = self.parse_github_issue_to_task(issue)
+                if task:
+                    tasks.append(task)
+
+            if tasks:
+                print(f"⚠️  Found {len(tasks)} URGENT backlog issues to address first!")
+
+            return tasks
+
+        except Exception as e:
+            print(f"⚠️  Error fetching urgent issues: {e}")
+            return []
+
+    def parse_github_issue_to_task(self, issue: dict) -> Optional[Task]:
+        """Convert a GitHub issue into a Task object"""
+        # Extract stage from labels
+        stage = None
+        for label in issue.get("labels", []):
+            if label["name"].startswith("stage-"):
+                stage = int(label["name"].split("-")[1])
+                break
+
+        if not stage:
+            return None
+
+        # Extract missing deliverables from the issue body
+        body = issue.get("body", "")
+        deliverables = []
+
+        for line in body.split('\n'):
+            # Look for checkbox items with file paths
+            if '- [ ]' in line and '`' in line:
+                # Extract the file path and description
+                match = re.search(r'`([^`]+)`\s*-?\s*(.*)', line)
+                if match:
+                    deliverables.append(match.group(1).strip())
+
+        if not deliverables:
+            return None
+
+        # Create task description from deliverables
+        description = f"Missing deliverables from Stage {stage}:\n"
+        description += "\n".join(f"- {d}" for d in deliverables)
+
+        # Determine model based on task complexity
+        model = self.determine_model(description)
+
+        task_id = f"GH{issue['number']}"
+
+        return Task(
+            id=task_id,
+            title=f"Fix missing deliverables from Stage {stage}",
+            description=description,
+            stage=stage,
+            priority="urgent",
+            model=model,
+            github_issue=issue['number'],
+            status="pending"
+        )
+
     def parse_development_plan(self) -> List[Task]:
         """Parse development_plan.md and extract tasks for current stage"""
         if not DEV_PLAN.exists():
@@ -321,52 +404,67 @@ class AgentOrchestrator:
         task_lower = task.description.lower()
         files = []
 
-        # Parse task description to determine required files
-        if "event bus" in task_lower or "eventbus" in task_lower:
-            files.append("scripts/autoloads/event_bus.gd")
+        # For GitHub issue tasks, extract file paths from description
+        if task.id.startswith("GH"):
+            for line in task.description.split('\n'):
+                # Look for file paths in the description
+                if line.strip().startswith('- '):
+                    # Extract file path (may have description after it)
+                    file_path = line.strip()[2:].strip()
+                    # Remove any trailing descriptions
+                    if ' - ' in file_path:
+                        file_path = file_path.split(' - ')[0].strip()
+                    # Remove backticks if present
+                    file_path = file_path.replace('`', '')
+                    if file_path and (file_path.endswith('.gd') or file_path.endswith('.tscn')):
+                        files.append(file_path)
+        else:
+            # Parse task description to determine required files
+            if "event bus" in task_lower or "eventbus" in task_lower:
+                files.append("scripts/autoloads/event_bus.gd")
 
-        if "first-person" in task_lower or "controller" in task_lower:
-            files.extend([
-                "scenes/player/first_person_controller.tscn",
-                "scripts/player/first_person_controller.gd"
-            ])
+            if "first-person" in task_lower or "controller" in task_lower:
+                files.extend([
+                    "scenes/player/first_person_controller.tscn",
+                    "scripts/player/first_person_controller.gd"
+                ])
 
-        if "debug overlay" in task_lower:
-            files.extend([
-                "scenes/ui/debug_overlay.tscn",
-                "scripts/ui/debug_overlay.gd"
-            ])
+            if "debug overlay" in task_lower:
+                files.extend([
+                    "scenes/ui/debug_overlay.tscn",
+                    "scripts/ui/debug_overlay.gd"
+                ])
 
-        if "editor" in task_lower and "mode" in task_lower:
-            files.append("scripts/autoloads/editor_mode.gd")
+            if "editor" in task_lower and "mode" in task_lower:
+                files.append("scripts/autoloads/editor_mode.gd")
 
-        if "dimension" in task_lower:
-            if "manager" in task_lower:
-                files.append("scripts/autoloads/dimension_manager.gd")
-            if "object" in task_lower:
-                files.append("scripts/dimension_object.gd")
-            if "gate" in task_lower or "switching" in task_lower:
-                files.append("scripts/dimension_gate.gd")
-            if "trigger" in task_lower:
-                files.append("scripts/dimension_trigger.gd")
+            if "dimension" in task_lower:
+                if "manager" in task_lower:
+                    files.append("scripts/autoloads/dimension_manager.gd")
+                if "object" in task_lower:
+                    files.append("scripts/dimension_object.gd")
+                if "gate" in task_lower or "switching" in task_lower:
+                    files.append("scripts/dimension_gate.gd")
+                if "trigger" in task_lower:
+                    files.append("scripts/dimension_trigger.gd")
 
-        if "palette" in task_lower:
-            files.append("scripts/editor/block_palette_manager.gd")
+            if "palette" in task_lower:
+                files.append("scripts/editor/block_palette_manager.gd")
 
-        if "serializ" in task_lower or "save" in task_lower or "load" in task_lower:
-            files.append("scripts/editor/level_serializer.gd")
+            if "serializ" in task_lower or "save" in task_lower or "load" in task_lower:
+                files.append("scripts/editor/level_serializer.gd")
 
-        if "sanity" in task_lower:
-            files.extend([
-                "scripts/player/sanity_system.gd",
-                "scripts/ui/sanity_hud.gd"
-            ])
+            if "sanity" in task_lower:
+                files.extend([
+                    "scripts/player/sanity_system.gd",
+                    "scripts/ui/sanity_hud.gd"
+                ])
 
-        if "health" in task_lower:
-            files.extend([
-                "scripts/player/health_system.gd",
-                "scripts/ui/health_hud.gd"
-            ])
+            if "health" in task_lower:
+                files.extend([
+                    "scripts/player/health_system.gd",
+                    "scripts/ui/health_hud.gd"
+                ])
 
         # Add development_plan.md for context
         files.append("development_plan.md")
@@ -378,10 +476,14 @@ class AgentOrchestrator:
         print(f"\n{'='*80}")
         print(f"🤖 Executing Task {task.id}: {task.title}")
         print(f"📊 Model: {task.model}")
+        if task.github_issue:
+            print(f"🔗 GitHub Issue: #{task.github_issue}")
         print(f"{'='*80}\n")
 
-        # Update GitHub issue
-        task.github_issue = self.create_github_issue(task)
+        # Update or create GitHub issue
+        if not task.github_issue:
+            task.github_issue = self.create_github_issue(task)
+
         self.update_github_issue(task, "in_progress", f"Starting work with model: {task.model}")
 
         # Get specific files for this task
@@ -389,7 +491,42 @@ class AgentOrchestrator:
         print(f"📂 Working on {len(task_files)} specific files")
 
         # Build aider command
-        prompt = f"""
+        is_backlog_task = task.id.startswith("GH")
+
+        if is_backlog_task:
+            prompt = f"""
+URGENT BACKLOG TASK - Missing Deliverables
+
+{task.description}
+
+This task addresses missing files from a previous stage. You MUST create all the files listed above.
+Each file listed is a deliverable that was supposed to exist but is missing.
+
+CRITICAL REQUIREMENTS:
+1. CREATE all files mentioned in the task description above
+2. Use Godot 4.x / GDScript 2.0 syntax ONLY
+3. Use CharacterBody3D instead of KinematicBody3D
+4. Use proper typed GDScript with type hints
+5. Follow the architecture principles in development_plan.md:
+   - Modular scene composition
+   - Event bus for communication (EventBus autoload)
+   - Resource-based data for configs
+   - State machines where appropriate
+6. Create clean, well-commented code
+7. Use export variables for designer-facing parameters
+
+FILE CREATION RULES:
+- Create files exactly at the paths specified in the task description
+- NEVER create files with backticks, asterisks, or markdown formatting in the name
+- ALWAYS use proper GDScript/Godot file extensions (.gd, .tscn, .tres, .gdshader)
+
+Folder structure:
+- scenes/ for .tscn files (subdivided: player/, ui/, editor/, levels/)
+- scripts/ for .gd files (subdivided: autoloads/, player/, ui/, editor/, resources/)
+- assets/ for external resources (configs/, shaders/, textures/)
+"""
+        else:
+            prompt = f"""
 {task.description}
 
 CRITICAL REQUIREMENTS:
@@ -465,7 +602,11 @@ Folder structure:
             self.update_github_issue(task, "completed", "Task completed with warnings - some deliverables may need review")
         else:
             print(f"✅ Task {task.id} completed and verified!")
-            self.update_github_issue(task, "completed", "Task completed and fully verified")
+            # For GitHub issue tasks, update checkboxes and close if all done
+            if task.id.startswith("GH"):
+                self.update_github_issue_checkboxes(task)
+            else:
+                self.update_github_issue(task, "completed", "Task completed and fully verified")
 
         # Update progress
         self.progress["completed_tasks"].append(task.id)
@@ -475,6 +616,79 @@ Folder structure:
         self.run_cleanup()
 
         return True
+
+    def update_github_issue_checkboxes(self, task: Task):
+        """Update checkboxes in GitHub issue and close if all deliverables are done"""
+        if not task.github_issue:
+            return
+
+        try:
+            # Get current issue body
+            result = subprocess.run(
+                ["gh", "issue", "view", str(task.github_issue), "--json", "body"],
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode != 0:
+                return
+
+            issue_data = json.loads(result.stdout)
+            body = issue_data.get("body", "")
+
+            # Check which deliverables now exist
+            updated_body = ""
+            all_complete = True
+
+            for line in body.split('\n'):
+                if '- [ ]' in line and '`' in line:
+                    # Extract file path
+                    match = re.search(r'`([^`]+)`', line)
+                    if match:
+                        file_path = match.group(1).strip()
+                        full_path = PROJECT_ROOT / file_path
+
+                        # Check if file exists
+                        if full_path.exists():
+                            # Mark as complete
+                            updated_body += line.replace('- [ ]', '- [x]') + '\n'
+                        else:
+                            # Still incomplete
+                            updated_body += line + '\n'
+                            all_complete = False
+                    else:
+                        updated_body += line + '\n'
+                else:
+                    updated_body += line + '\n'
+
+            # Update the issue body with checked boxes
+            subprocess.run(
+                ["gh", "issue", "edit", str(task.github_issue), "--body", updated_body],
+                capture_output=True
+            )
+
+            # Add comment and close if all complete
+            if all_complete:
+                comment = "✅ **All Deliverables Completed**\n\nAll missing files have been created and verified. Closing issue."
+                subprocess.run(
+                    ["gh", "issue", "comment", str(task.github_issue), "--body", comment],
+                    capture_output=True
+                )
+                subprocess.run(
+                    ["gh", "issue", "close", str(task.github_issue)],
+                    capture_output=True
+                )
+                print(f"✅ Closed GitHub issue #{task.github_issue} - all deliverables complete!")
+            else:
+                comment = "🔄 **Progress Update**\n\nSome deliverables have been completed. Updated checkboxes above. Issue remains open for remaining items."
+                subprocess.run(
+                    ["gh", "issue", "comment", str(task.github_issue), "--body", comment],
+                    capture_output=True
+                )
+                print(f"📝 Updated GitHub issue #{task.github_issue} - partial progress")
+
+        except Exception as e:
+            print(f"⚠️  Error updating GitHub issue checkboxes: {e}")
 
     def verify_task_deliverables(self, task: Task) -> bool:
         """Verify that expected files for a task actually exist"""
@@ -506,6 +720,20 @@ Folder structure:
         print(f"Completed Tasks: {len(self.progress.get('completed_tasks', []))}")
         print(f"Failed Tasks: {len(self.progress.get('failed_tasks', []))}")
         print(f"GitHub Issues Created: {len(self.progress.get('github_issues', {}))}")
+
+        # Check for urgent backlog issues
+        try:
+            result = subprocess.run(
+                ["gh", "issue", "list", "--label", "urgent", "--state", "open", "--json", "number"],
+                capture_output=True,
+                text=True
+            )
+            if result.returncode == 0:
+                urgent_issues = json.loads(result.stdout)
+                if urgent_issues:
+                    print(f"\n⚠️  URGENT BACKLOG: {len(urgent_issues)} open issues requiring attention")
+        except:
+            pass
 
         # Show recent completions
         recent = self.progress.get("completed_tasks", [])[-5:]
@@ -543,9 +771,16 @@ Folder structure:
             # Display progress summary
             self.display_progress_summary()
 
-            tasks = self.parse_development_plan()
+            # PRIORITY 1: Get urgent backlog issues first
+            urgent_tasks = self.get_urgent_github_issues()
 
-            if not tasks:
+            # PRIORITY 2: Get new tasks from development plan
+            plan_tasks = self.parse_development_plan()
+
+            # Combine with urgent tasks first
+            all_tasks = urgent_tasks + plan_tasks
+
+            if not all_tasks:
                 print("✨ No tasks found for current stage. Moving to next stage!")
                 self.current_stage += 1
                 self.save_progress()
@@ -560,11 +795,15 @@ Folder structure:
 
                 continue
 
-            print(f"📋 Found {len(tasks)} tasks for Stage {self.current_stage}")
+            if urgent_tasks:
+                print(f"⚠️  BACKLOG: {len(urgent_tasks)} urgent issues to fix")
+            if plan_tasks:
+                print(f"📋 PLANNED: {len(plan_tasks)} new tasks for Stage {self.current_stage}")
+            print(f"📊 TOTAL: {len(all_tasks)} tasks (urgent issues prioritized first)")
 
             # Filter out completed tasks
             pending_tasks = [
-                t for t in tasks
+                t for t in all_tasks
                 if t.id not in self.progress.get("completed_tasks", [])
                 and t.id not in self.progress.get("failed_tasks", [])
             ]
