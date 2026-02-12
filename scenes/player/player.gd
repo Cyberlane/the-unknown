@@ -14,6 +14,7 @@ var velocity: Vector3 = Vector3.ZERO
 var is_sprinting: bool = false
 var is_crouching: bool = false
 var head_bob_offset: float = 0.0
+var dimension_item: Node? = null
 
 func _ready():
     camera = $Camera3D
@@ -63,6 +64,8 @@ func _input(event):
                 is_sprinting = true
             elif event.scancode == KEY_C:
                 is_crouching = true
+            elif event.scancode == KEY_E:  # Equip/Use dimension item
+                use_dimension_item()
         else:
             if event.scancode == KEY_LSHIFT:
                 is_sprinting = false
@@ -72,3 +75,8 @@ func _input(event):
 ## Public API: Check if the player is in a specific dimension
 func is_in_dimension(dimension: DimensionManager.Dimension) -> bool:
     return DimensionManager.current_dimension == dimension
+
+# New function to handle using the dimension item
+func use_dimension_item():
+    if dimension_item != null:
+        EventBus.emit_signal("dimension_item_used", dimension_item)
