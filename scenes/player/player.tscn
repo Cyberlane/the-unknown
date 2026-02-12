@@ -1,4 +1,4 @@
-# scenes/player/player.tscn
 [gd_scene load_steps=1 format_version=3]
 [node name="Player"] (Spatial)
 [node name="CharacterBody3D" type="KinematicBody3D" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CharacterBody3D"]
