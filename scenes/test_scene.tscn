@@ -1,6 +1,70 @@
-# scenes/test_scene.tscn
-[gd_scene load_steps=1 format<｜begin▁of▁sentence｜>_version=3]
-[node name="TestScene"] (Spatial)
-[node name="Player" type="Node3D" instance={file(res://scripts/dimension_object.gd)}]
+[gd_scene load_steps=10 format=3 uid="uid://bkj8x7vn5qr2p"]
+
+[ext_resource type="PackedScene" uid="uid://cx8yp7qn2uqyg" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scripts/dimension_object.gd" id="2_dimobj"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(20, 0.2, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(20, 0.2, 20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_normal"]
+albedo_color = Color(0.8, 0.8, 0.8, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_viking"]
+albedo_color = Color(0.2, 0.5, 0.9, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aztec"]
+albedo_color = Color(0.9, 0.7, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nightmare"]
+albedo_color = Color(0.6, 0.1, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cube"]
+size = Vector3(1, 1.5, 1)
+
+[node name="TestScene" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)
+shadow_enabled = true
+
 [node name="Floor" type="StaticBody3D" parent="."]
-[node name="Wall" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("StandardMaterial3D_normal")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Statue" type="Node3D" parent="." node_paths=PackedStringArray("normal_mesh", "viking_mesh", "aztec_mesh", "nightmare_mesh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -5)
+script = ExtResource("2_dimobj")
+normal_mesh = NodePath("NormalCube")
+viking_mesh = NodePath("VikingCube")
+aztec_mesh = NodePath("AztecCube")
+nightmare_mesh = NodePath("NightmareCube")
+
+[node name="NormalCube" type="MeshInstance3D" parent="Statue"]
+mesh = SubResource("BoxMesh_cube")
+surface_material_override/0 = SubResource("StandardMaterial3D_normal")
+
+[node name="VikingCube" type="MeshInstance3D" parent="Statue"]
+visible = false
+mesh = SubResource("BoxMesh_cube")
+surface_material_override/0 = SubResource("StandardMaterial3D_viking")
+
+[node name="AztecCube" type="MeshInstance3D" parent="Statue"]
+visible = false
+mesh = SubResource("BoxMesh_cube")
+surface_material_override/0 = SubResource("StandardMaterial3D_aztec")
+
+[node name="NightmareCube" type="MeshInstance3D" parent="Statue"]
+visible = false
+mesh = SubResource("BoxMesh_cube")
+surface_material_override/0 = SubResource("StandardMaterial3D_nightmare")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
