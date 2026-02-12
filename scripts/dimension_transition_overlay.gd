@@ -2,7 +2,7 @@
 extends CanvasLayer
 
 @export_group("Transition Settings")
-@export var transition_duration: float = 0.3
+@export var transition_duration: float = 1.0
 @export var transition_shader: Shader
 
 @export_group("Glitch Effect Settings")
