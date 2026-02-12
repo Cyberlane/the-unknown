@@ -17,7 +17,7 @@ func remove_listener(event_name: String, callback: Callable):
 func emit_event(event_name: String, *args):
     if event_name in _listeners:
         for listener in _listeners[event_name]:
-            listener.call_func(*args)
+            listener.call(*args)  # Corrected method call
 
 # New function to handle switching to play mode and returning to editor
 func switch_to_play_mode(spawn_point: String):
