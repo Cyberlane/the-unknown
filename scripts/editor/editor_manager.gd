@@ -1,0 +1,1 @@
+# This script manages the overall operation of the editor mode. It should handle switching between gameplay and editor modes, managing the UI elements in the scene, and communicating with other scripts that manage the gameplay aspects of the level (like block palettes or level serialization).

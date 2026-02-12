@@ -1,0 +1,1 @@
+# This script handles the serialization and deserialization of levels in a format that can be saved to and loaded from disk. It should handle converting level data into JSON or another suitable format, as well as loading this data back into the game world when needed.

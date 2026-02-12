@@ -1,0 +1,1 @@
+# This script manages the block palettes used in the editor. It should handle creating and managing different types of blocks, like walls, floors, ceilings, etc., as well as handling placing, rotating, and deleting these blocks with mouse input.
