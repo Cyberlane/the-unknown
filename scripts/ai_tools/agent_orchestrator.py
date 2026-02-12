@@ -13,6 +13,8 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import List, Optional
 import re
+import fcntl  # For file locking
+import hashlib  # For stable hashing
 
 # CONFIGURATION
 GODOT_PATH = "/Applications/Godot.app/Contents/MacOS/Godot"
@@ -37,6 +39,7 @@ class Task:
     model: str
     github_issue: Optional[int] = None
     status: str = "pending"  # pending, in_progress, completed, failed
+    issue_hash: Optional[str] = None  # Hash to prevent re-processing same issue
 
 class AgentOrchestrator:
     def __init__(self):
@@ -46,21 +49,47 @@ class AgentOrchestrator:
         self.run_cleanup()  # Clean up malformed files on startup
 
     def load_progress(self):
-        """Load progress from persistent storage"""
+        """Load progress from persistent storage with file locking"""
         if PROGRESS_FILE.exists():
-            with open(PROGRESS_FILE) as f:
-                return json.load(f)
+            try:
+                with open(PROGRESS_FILE, 'r') as f:
+                    # Acquire shared lock for reading
+                    fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+                    try:
+                        data = json.load(f)
+                    finally:
+                        fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                    return data
+            except Exception as e:
+                print(f"⚠️  Error loading progress (will use defaults): {e}")
+
         return {
             "current_stage": 1,
             "completed_tasks": [],
             "failed_tasks": [],
-            "github_issues": {}
+            "github_issues": {},
+            "processed_issue_hashes": []  # Track processed issues to prevent loops
         }
 
     def save_progress(self):
-        """Save progress to persistent storage"""
-        with open(PROGRESS_FILE, "w") as f:
-            json.dump(self.progress, f, indent=2)
+        """Save progress to persistent storage with file locking"""
+        try:
+            # Use a temporary file and atomic rename to prevent corruption
+            temp_file = PROGRESS_FILE.with_suffix('.json.tmp')
+            with open(temp_file, 'w') as f:
+                # Acquire exclusive lock for writing
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                try:
+                    json.dump(self.progress, f, indent=2)
+                    f.flush()
+                    os.fsync(f.fileno())  # Force write to disk
+                finally:
+                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+
+            # Atomic rename
+            temp_file.replace(PROGRESS_FILE)
+        except Exception as e:
+            print(f"⚠️  Error saving progress: {e}")
 
     def setup_git_config(self):
         """Configure git to bypass GPG signing for automated commits"""
@@ -131,7 +160,8 @@ class AgentOrchestrator:
                  "--state", "open",
                  "--json", "number,title,body,labels"],
                 capture_output=True,
-                text=True
+                text=True,
+                timeout=10  # Prevent hanging on API calls
             )
 
             if result.returncode != 0:
@@ -141,10 +171,23 @@ class AgentOrchestrator:
             issues = json.loads(result.stdout)
             tasks = []
 
+            # Get list of already processed issue hashes to prevent re-processing
+            processed_hashes = set(self.progress.get("processed_issue_hashes", []))
+
             for issue in issues:
+                # Create stable hash of issue content to detect duplicates
+                issue_content = f"{issue['number']}:{issue.get('body', '')}"
+                issue_hash = hashlib.sha256(issue_content.encode()).hexdigest()[:16]
+
+                # Skip if we've already processed this exact issue content
+                if issue_hash in processed_hashes:
+                    print(f"   Skipping issue #{issue['number']} - already processed")
+                    continue
+
                 # Parse the issue to extract missing deliverables
                 task = self.parse_github_issue_to_task(issue)
                 if task:
+                    task.issue_hash = issue_hash  # Store hash for tracking
                     tasks.append(task)
 
             if tasks:
@@ -152,6 +195,9 @@ class AgentOrchestrator:
 
             return tasks
 
+        except subprocess.TimeoutExpired:
+            print("⚠️  GitHub API call timed out")
+            return []
         except Exception as e:
             print(f"⚠️  Error fetching urgent issues: {e}")
             return []
@@ -567,12 +613,18 @@ Folder structure:
         for file_path in task_files:
             aider_cmd.append(file_path)
 
-        result = subprocess.run(
-            aider_cmd,
-            stdin=subprocess.DEVNULL,
-            capture_output=True,
-            text=True
-        )
+        try:
+            result = subprocess.run(
+                aider_cmd,
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=600  # 10 minute timeout to prevent hanging
+            )
+        except subprocess.TimeoutExpired:
+            print(f"❌ Aider timed out after 10 minutes")
+            self.update_github_issue(task, "failed", "Aider execution timed out after 10 minutes")
+            return False
 
         if result.returncode != 0:
             print(f"❌ Aider failed: {result.stderr}")
@@ -602,14 +654,26 @@ Folder structure:
             self.update_github_issue(task, "completed", "Task completed with warnings - some deliverables may need review")
         else:
             print(f"✅ Task {task.id} completed and verified!")
-            # For GitHub issue tasks, update checkboxes and close if all done
+            # For GitHub issue tasks, update checkboxes and ALWAYS close
             if task.id.startswith("GH"):
                 self.update_github_issue_checkboxes(task)
+                # Close the issue even if not all deliverables are done to prevent loops
+                # If items remain, they should be caught by validation and create new issues
+                if task.github_issue:
+                    subprocess.run(
+                        ["gh", "issue", "close", str(task.github_issue)],
+                        capture_output=True
+                    )
+                    print(f"✅ Closed GitHub issue #{task.github_issue} to prevent re-processing")
             else:
                 self.update_github_issue(task, "completed", "Task completed and fully verified")
 
-        # Update progress
+        # Update progress and mark issue hash as processed
         self.progress["completed_tasks"].append(task.id)
+        if hasattr(task, 'issue_hash') and task.issue_hash:
+            if "processed_issue_hashes" not in self.progress:
+                self.progress["processed_issue_hashes"] = []
+            self.progress["processed_issue_hashes"].append(task.issue_hash)
         self.save_progress()
 
         # Run cleanup after each task to catch any malformed files immediately
@@ -667,25 +731,21 @@ Folder structure:
                 capture_output=True
             )
 
-            # Add comment and close if all complete
+            # Add comment (issue will be closed by caller to prevent re-processing)
             if all_complete:
-                comment = "✅ **All Deliverables Completed**\n\nAll missing files have been created and verified. Closing issue."
+                comment = "✅ **All Deliverables Completed**\n\nAll missing files have been created and verified."
                 subprocess.run(
                     ["gh", "issue", "comment", str(task.github_issue), "--body", comment],
                     capture_output=True
                 )
-                subprocess.run(
-                    ["gh", "issue", "close", str(task.github_issue)],
-                    capture_output=True
-                )
-                print(f"✅ Closed GitHub issue #{task.github_issue} - all deliverables complete!")
+                print(f"✅ All deliverables complete for GitHub issue #{task.github_issue}")
             else:
-                comment = "🔄 **Progress Update**\n\nSome deliverables have been completed. Updated checkboxes above. Issue remains open for remaining items."
+                comment = "🔄 **Progress Update**\n\nSome deliverables have been completed. Updated checkboxes above. Issue will be closed to prevent re-processing - remaining items should be caught by validation."
                 subprocess.run(
                     ["gh", "issue", "comment", str(task.github_issue), "--body", comment],
                     capture_output=True
                 )
-                print(f"📝 Updated GitHub issue #{task.github_issue} - partial progress")
+                print(f"📝 Partial progress on GitHub issue #{task.github_issue}")
 
         except Exception as e:
             print(f"⚠️  Error updating GitHub issue checkboxes: {e}")
@@ -777,10 +837,23 @@ Folder structure:
             # PRIORITY 2: Get new tasks from development plan
             plan_tasks = self.parse_development_plan()
 
-            # Combine with urgent tasks first
-            all_tasks = urgent_tasks + plan_tasks
+            # Sort urgent tasks by stage number (ascending) to ensure proper order
+            # Stage 1 must be completed before Stage 4, etc.
+            urgent_tasks_sorted = sorted(urgent_tasks, key=lambda t: t.stage)
+
+            # Combine with urgent tasks first (now sorted by stage)
+            all_tasks = urgent_tasks_sorted + plan_tasks
 
             if not all_tasks:
+                # CRITICAL FIX: Don't advance stage if urgent backlog exists for ANY stage
+                if urgent_tasks_sorted:
+                    print("⚠️  Cannot advance: urgent backlog exists in other stages")
+                    print("   Please resolve urgent issues before continuing")
+                    if not continuous:
+                        return
+                    time.sleep(30)  # Wait before retry
+                    continue
+
                 print("✨ No tasks found for current stage. Moving to next stage!")
                 self.current_stage += 1
                 self.save_progress()
@@ -796,10 +869,13 @@ Folder structure:
                 continue
 
             if urgent_tasks:
-                print(f"⚠️  BACKLOG: {len(urgent_tasks)} urgent issues to fix")
+                print(f"⚠️  BACKLOG: {len(urgent_tasks)} urgent issues to fix (sorted by stage)")
+                # Show which stages have urgent issues
+                stages_with_urgent = sorted(set(t.stage for t in urgent_tasks))
+                print(f"   Urgent stages: {stages_with_urgent}")
             if plan_tasks:
                 print(f"📋 PLANNED: {len(plan_tasks)} new tasks for Stage {self.current_stage}")
-            print(f"📊 TOTAL: {len(all_tasks)} tasks (urgent issues prioritized first)")
+            print(f"📊 TOTAL: {len(all_tasks)} tasks (processing in stage order)")
 
             # Filter out completed tasks
             pending_tasks = [

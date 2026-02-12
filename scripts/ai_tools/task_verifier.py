@@ -104,8 +104,38 @@ class TaskVerifier:
 
         return stages
 
+    def check_existing_issue(self, stage: int) -> bool:
+        """Check if an open issue already exists for this stage's missing deliverables"""
+        try:
+            result = subprocess.run(
+                ["gh", "issue", "list",
+                 "--state", "open",
+                 "--label", f"stage-{stage}",
+                 "--label", "urgent",
+                 "--json", "number,title"],
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode == 0:
+                issues = json.loads(result.stdout)
+                # Check if any open issue matches this stage's missing deliverables pattern
+                for issue in issues:
+                    if f"[Stage {stage}]" in issue["title"] and "Missing Deliverables" in issue["title"]:
+                        print(f"\n⚠️  Open issue already exists for Stage {stage}: #{issue['number']}")
+                        return True
+            return False
+        except Exception as e:
+            print(f"\n⚠️  Error checking for existing issues: {e}")
+            return False
+
     def create_github_issue_for_missing(self, stage: int, missing: List[str]):
-        """Create a GitHub issue for missing deliverables"""
+        """Create a GitHub issue for missing deliverables (only if one doesn't already exist)"""
+        # Check if an issue already exists for this stage
+        if self.check_existing_issue(stage):
+            print(f"   Skipping issue creation - open issue already exists")
+            return None
+
         title = f"[Stage {stage}] Missing Deliverables - Incomplete Work"
 
         body = f"""## Stage {stage} Verification Failed

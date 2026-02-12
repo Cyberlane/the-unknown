@@ -7,6 +7,7 @@ Runs in the background to catch issues early
 import subprocess
 import time
 import json
+import hashlib
 from pathlib import Path
 from datetime import datetime
 
@@ -112,7 +113,8 @@ class ValidatorAgent:
     def create_error_issue(self, commit: str, error_text: str):
         """Create GitHub issue for build errors"""
         # Check if we already created an issue for this error
-        error_hash = hash(error_text)
+        # Use SHA256 for stable, deterministic hashing (not Python's hash())
+        error_hash = hashlib.sha256(error_text.encode()).hexdigest()[:16]
         recent_errors = [e for e in self.validation_history.get("errors", [])
                         if e.get("error_hash") == error_hash]
 
