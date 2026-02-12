@@ -1,0 +1,15 @@
+extends Resource
+
+enum PreviewDimension {
+    NORMAL,
+    VIKING,
+    AZTEC,
+    NIGHTMARE
+}
+
+export var materials: Array = [
+    { dimension: PreviewDimension.NORMAL, material: null },
+    { dimension: PreviewDimension.VIKING, material: null },
+    { dimension: PreviewDimension.AZTEC, material: null },
+    { dimension: PreviewDimension.NIGHTMARE, material: null }
+]

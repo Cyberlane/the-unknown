@@ -29,6 +29,9 @@ enum PreviewDimension {
 @export var aztec_collision: CollisionShape3D
 @export var nightmare_collision: CollisionShape3D
 
+@export_group("Material Configuration")
+@export(Resource) var material_config: Resource = preload("res://assets/configs/material_config.tres")
+
 func _ready():
     # Only connect to DimensionManager at runtime (not in editor)
     if Engine.is_editor_hint():
@@ -56,3 +59,14 @@ func _update_visibility(active_dim: int):
         if viking_collision: viking_collision.disabled = (active_dim != PreviewDimension.VIKING)
         if aztec_collision: aztec_collision.disabled = (active_dim != PreviewDimension.AZTEC)
         if nightmare_collision: nightmare_collision.disabled = (active_dim != PreviewDimension.NIGHTMARE)
+
+    # Update material based on active dimension
+    _update_material(active_dim)
+
+func _update_material(active_dim: int):
+    for mat_config in material_config.materials:
+        if mat_config.dimension == active_dim:
+            for mesh in [$normal_mesh, $viking_mesh, $aztec_mesh, $nightmare_mesh]:
+                if mesh and mesh.get_surface_count() > 0:
+                    mesh.surface_set_material(0, mat_config.material)
+            break
