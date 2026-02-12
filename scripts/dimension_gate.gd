@@ -12,22 +12,19 @@ enum GateMode { PASSIVE, ACTIVE }
 @export_group("Gate Settings")
 @export var mode: GateMode = GateMode.PASSIVE
     set(value):
-        func(value):
-            mode = value
-            _update_visual()
+        mode = value
+        _update_visual()
 
 @export var target_dimension: DimensionManager.Dimension = DimensionManager.Dimension.NORMAL
     set(value):
-        func(value):
-            target_dimension = value
-            _update_visual()
+        target_dimension = value
+        _update_visual()
 
 @export_group("Visual Settings")
 @export var gate_size: Vector3 = Vector3(4, 4, 0.5)
     set(value):
-        func(value):
-            gate_size = value
-            _update_visual()
+        gate_size = value
+        _update_visual()
 
 @export var passive_color: Color = Color(0.5, 0.5, 0.5, 0.3)
 @export var active_color: Color = Color(0.2, 0.6, 1.0, 0.4)
@@ -50,8 +47,7 @@ func _ready():
     if Engine.is_editor_hint():
         _setup_editor_visual()
     else:
-        func():
-            _setup_runtime()
+        _setup_runtime()
 
 func _setup_editor_visual():
     # Create or update visual placeholder for editor
@@ -113,17 +109,13 @@ func _update_visual():
     if mode == GateMode.ACTIVE:
         match target_dimension:
             DimensionManager.Dimension.NORMAL:
-                func():
-                    material.albedo_color = Color(0.7, 0.7, 0.7, 0.4)
+                material.albedo_color = Color(0.7, 0.7, 0.7, 0.4)
             DimensionManager.Dimension.VIKING:
-                func():
-                    material.albedo_color = Color(0.3, 0.5, 1.0, 0.4)
+                material.albedo_color = Color(0.3, 0.5, 1.0, 0.4)
             DimensionManager.Dimension.AZTEC:
-                func():
-                    material.albedo_color = Color(1.0, 0.8, 0.3, 0.4)
+                material.albedo_color = Color(1.0, 0.8, 0.3, 0.4)
             DimensionManager.Dimension.NIGHTMARE:
-                func():
-                    material.albedo_color = Color(0.8, 0.2, 0.2, 0.4)
+                material.albedo_color = Color(0.8, 0.2, 0.2, 0.4)
 
     placeholder_mesh.mesh = box_mesh
     placeholder_mesh.set_surface_override_material(0, material)
@@ -153,23 +145,20 @@ func _update_label():
             label.owner = get_tree().edited_scene_root
 
     # Update label text based on mode
+    var dim_name = ""
     if mode == GateMode.PASSIVE:
         label.text = "DIMENSION LOCK ZONE"
         label.modulate = passive_color
     else:
         match target_dimension:
             DimensionManager.Dimension.NORMAL:
-                func():
-                    dim_name = "NORMAL"
+                dim_name = "NORMAL"
             DimensionManager.Dimension.VIKING:
-                func():
-                    dim_name = "VIKING"
+                dim_name = "VIKING"
             DimensionManager.Dimension.AZTEC:
-                func():
-                    dim_name = "AZTEC"
+                dim_name = "AZTEC"
             DimensionManager.Dimension.NIGHTMARE:
-                func():
-                    dim_name = "NIGHTMARE"
+                dim_name = "NIGHTMARE"
         label.text = "PORTAL → %s" % dim_name
         label.modulate = active_color
 
