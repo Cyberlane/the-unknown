@@ -1,0 +1,11 @@
+[resource]
+items = [
+    {
+        "dimension": "normal",
+        "audio_stream": "res://assets/audio/normal_dimension.ogg"
+    },
+    {
+        "dimension": "nightmare",
+        "audio_stream": "res://assets/audio/nightmare_dimension.ogg"
+    }
+]
