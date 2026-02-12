@@ -1,0 +1,7 @@
+[gd_scene load_steps=4 format=2]
+
+[node name="EditorUI" type="Control"]
+
+[node name="QuickTestButton" parent="." type="Button"]
+text = "Quick Test"
+rect_min_size = Vector2(100, 50)

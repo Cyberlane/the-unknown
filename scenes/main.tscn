@@ -1,0 +1,7 @@
+
+[node name="Main" type="Node"]
+
+[node name="Player" parent="." type="CharacterBody3D"]
+position = Vector3(0, 1, 0)
+
+[node name="EventBusListener" parent="."]
