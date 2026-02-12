@@ -1,0 +1,7 @@
+[ext_resource path="res://materials/shaders/dimension_transition.gdshader" type="ShaderMaterial" id=1]
+
+[resource]
+color_grading = Color(0.5, 0.5, 0.5)
+vignette_intensity = 0.2
+fog_density = 0.1
+fog_color = Color(0.8, 0.8, 0.8)
