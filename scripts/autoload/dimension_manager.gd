@@ -1,30 +1,12 @@
-# scripts/autoload/dimension_manager.gd
 extends Node
 
-signal dimension_changed(new_dimension)
+@export var preview_dimensions: Array = []
 
-enum Dimension {
-    NORMAL,
-    VIKING,
-    AZTEC,
-    NIGHTMARE
-}
+func _ready():
+    EventBus.connect("dimension_toggle", self, "_on_dimension_toggle")
 
-var current_dimension: Dimension = Dimension.NORMAL:
-    set(value):
-        if current_dimension != value:
-            current_dimension = value
-            dimension_changed.emit(current_dimension)
-
-# Set to true to prevent dimension switching (used by DimensionGate passive mode)
-var dimension_locked: bool = false
-
-func switch_to(dimension_index: int):
-    # Check if dimension switching is locked
-    if dimension_locked:
-        print("Dimension switch blocked - currently in a locked zone")
-        return
-
-    if dimension_index in Dimension.values():
-        current_dimension = dimension_index as Dimension
-        print("Dimension switch to: ", Dimension.keys()[current_dimension])
+func _on_dimension_toggle(dimension_index):
+    if dimension_index > 0 and dimension_index <= preview_dimensions.size():
+        var active_dim = preview_dimensions[dimension_index - 1]
+        # Assuming there's a way to switch dimensions, e.g., by calling a method on the player
+        get_node("/root/Main/Player").switch_dimension(active_dim)

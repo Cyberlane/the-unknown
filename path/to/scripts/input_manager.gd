@@ -1,37 +1,12 @@
-extends CharacterBody3D
+extends Node
 
-# Export variables for designer-facing parameters
-export var move_speed: float = 5.0
-export var jump_force: float = 10.0
-
-# Event bus for communication
-var event_bus: EventBus
+@export var dimension_keys: Array = [Key.KEY_1, Key.KEY_2, Key.KEY_3, Key.KEY_4]
 
 func _ready():
-    # Initialize the event bus
-    event_bus = get_node("/root/EventBus")
-
-func _process(delta):
-    handle_input()
-
-func handle_input():
-    var velocity = Vector3.ZERO
-    
-    if Input.is_action_pressed("ui_right"):
-        velocity.x += 1.0
-    if Input.is_action_pressed("ui_left"):
-        velocity.x -= 1.0
-    if Input.is_action_pressed("ui_down"):
-        velocity.z += 1.0
-    if Input.is_action_pressed("ui_up"):
-        velocity.z -= 1.0
-    
-    velocity = velocity.normalized() * move_speed
-    velocity.y = velocity.y + jump_force * Input.is_action_just_pressed("ui_jump")
-    
-    move_and_slide(velocity)
+    set_process_input(true)
 
 func _input(event):
     if event is InputEventKey and event.pressed:
-        match event.scancode:
-            KEY_SPACE: emit_signal("jump")
+        for i in range(dimension_keys.size()):
+            if event.scancode == dimension_keys[i]:
+                EventBus.emit_signal("dimension_toggle", i + 1)
