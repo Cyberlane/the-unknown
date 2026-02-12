@@ -38,3 +38,7 @@ func emit_undo_event():
 
 func emit_redo_event():
     emit_event("redo")
+
+# New function to handle sanity events
+func emit_sanity_event(sanity_level: float):
+    emit_event("sanity_event", sanity_level)
