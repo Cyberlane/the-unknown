@@ -3,7 +3,7 @@ extends Node
 
 signal editor_enabled
 signal editor_disabled
-signal editor_state_changed(is_active: bool)
+signal editor_mode_changed(is_active: bool)
 
 var editor_active: bool = false
 
